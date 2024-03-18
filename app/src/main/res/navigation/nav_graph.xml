@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/splashScreen">
+
+    <activity
+        android:id="@+id/splashScreen"
+        android:name="com.shruti.notealways.SplashScreen"
+        android:label="activity_splash_screen"
+        tools:layout="@layout/activity_splash_screen" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.shruti.notealways.MainFragment"
+        android:label="MainFragment" />
+    <fragment
+        android:id="@+id/todoFragment"
+        android:name="com.shruti.notealways.TodoFragment"
+        android:label="fragment_todo"
+        tools:layout="@layout/fragment_todo" />
+    <fragment
+        android:id="@+id/bottomsheetFragment"
+        android:name="com.shruti.notealways.BottomsheetFragment"
+        android:label="BottomsheetFragment" >
+        <action
+            android:id="@+id/action_bottomsheetFragment_to_todoFragment"
+            app:destination="@id/todoFragment" />
+        <action
+            android:id="@+id/action_bottomsheetFragment_to_notesFragment"
+            app:destination="@id/notesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="com.shruti.notealways.NotesFragment"
+        android:label="NotesFragment" />
+</navigation>

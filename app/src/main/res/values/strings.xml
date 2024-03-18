@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">NoteAlways</string>
+    <string name="notealways">NOTEALWAYS</string>
+    <string name="firstviewpager">You can easily add notes daily </string>
+    <string name="thirdviewpager">"This app will help you to make your notes "</string>
+    <string name="secondviewpager">"Make your notes with good points "</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="writenotes">Write your notes</string>
+    <string name="introsplash">Make your note with simplicity and clean design</string>
+    <string name="start">Let\'s Start</string>
+    <string name="mynotes">My Notes</string>
+    <string name="todolist">To-do List</string>
+    <string name="search">Search</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="notes">Notes</string>
+    <string name="todo">To-Do</string>
+</resources>
