@@ -9,12 +9,18 @@
         <variable
             name="show"
             type="Boolean" />
+        <import type="android.view.View"/>
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BottomsheetFragment"
-    android:paddingTop="@dimen/size_30dp">
+    tools:context=".BottomsheetFragment">
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".15"
+        android:id="@+id/guide_h_15"/>
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,13 +39,16 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/guide_v_20"
         android:text="@string/notes"
-        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/btnbottomClick"
+        app:layout_constraintTop_toTopOf="@id/guide_h_15"
         android:onClick="@{()->bottomSheet.bottomClickNotes()}"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/todo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guide_h_15"
         app:layout_constraintStart_toStartOf="@id/guide_v_60"
         android:onClick="@{()->bottomSheet.bottomClickTodo()}"/>
 

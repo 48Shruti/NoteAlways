@@ -14,16 +14,19 @@ class SplashScreen : AppCompatActivity() {
     lateinit var logoImage :ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySplashScreenBinding.inflate(layoutInflater)
+
+
+        binding = ActivitySplashScreenBinding.inflate(layoutInflater)//initialization of binding//
         setContentView(binding.root)
         val sideAnimation = AnimationUtils.loadAnimation(this,R.anim.icon)
         binding.imglogo.startAnimation(sideAnimation)
+        binding.btnstart.setOnClickListener {
         Handler(Looper.getMainLooper()).postDelayed({
-            binding.btnstart.setOnClickListener {
-            startActivity(Intent(this,MainActivity::class.java))
-           finish()
-            }
-        },2000)
+            var intent = Intent(this,MainActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }, 100)
+        }
 
     }
 }
