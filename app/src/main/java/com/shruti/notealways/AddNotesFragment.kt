@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import com.shruti.notealways.databinding.FragmentAddNotesBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -22,6 +23,7 @@ class AddNotesFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding : FragmentAddNotesBinding
+    lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
@@ -26,6 +27,7 @@ class MainFragment : Fragment() {
     private var param2: String? = null
     lateinit var binding : FragmentMainBinding
      lateinit var mainActivity: MainActivity
+     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
@@ -47,7 +49,6 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.show = true
         binding.mainFragment = this
-
     }
     fun fabButton(){
         val dialogBinding = FragmentBottomsheetBinding.inflate(layoutInflater)

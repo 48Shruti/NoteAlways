@@ -39,8 +39,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/guide_v_20"
         android:text="@string/notes"
-        android:clickable="true"
-        android:focusable="true"
         android:id="@+id/btnbottomClick"
         app:layout_constraintTop_toTopOf="@id/guide_h_15"
         android:onClick="@{()->bottomSheet.bottomClickNotes()}"/>
@@ -51,6 +49,7 @@
         app:layout_constraintTop_toTopOf="@id/guide_h_15"
         app:layout_constraintStart_toStartOf="@id/guide_v_60"
         android:onClick="@{()->bottomSheet.bottomClickTodo()}"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

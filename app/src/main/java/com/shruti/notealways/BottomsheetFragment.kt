@@ -50,6 +50,8 @@ open class BottomsheetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
+       // Log.d(TAG, "onViewCreated: Button Click Listener is being set up")
      //   binding.bottomSheet = this
         binding.show = true
 //        binding.btnbottomClick.setOnClickListener {
@@ -58,13 +60,14 @@ open class BottomsheetFragment : Fragment() {
 //        }
 
     }
-    fun bottomClickNotes(){
+    fun bottomClickNotes(view: View){
         Toast.makeText(mainActivity,"Click",Toast.LENGTH_SHORT).show()
         Log.e(TAG,"Button is click")
-        findNavController().navigate(R.id.action_bottomsheetFragment_to_addNotesFragment)
+        navController.navigate(R.id.action_bottomsheetFragment_to_addNotesFragment)
+
     }
-    fun bottomClickTodo(){
-       findNavController().navigate(R.id.action_bottomsheetFragment_to_addTodoFragment)
+    fun bottomClickTodo(view: View){
+       navController.navigate(R.id.action_bottomsheetFragment_to_addTodoFragment)
     }
 
     companion object {
