@@ -40,15 +40,13 @@
         app:layout_constraintStart_toStartOf="@id/guide_v_20"
         android:text="@string/notes"
         android:id="@+id/btnbottomClick"
-        app:layout_constraintTop_toTopOf="@id/guide_h_15"
-        android:onClick="@{()->bottomSheet.bottomClickNotes()}"/>
+        app:layout_constraintTop_toTopOf="@id/guide_h_15"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/todo"
         app:layout_constraintTop_toTopOf="@id/guide_h_15"
-        app:layout_constraintStart_toStartOf="@id/guide_v_60"
-        android:onClick="@{()->bottomSheet.bottomClickTodo()}"/>
+        app:layout_constraintStart_toStartOf="@id/guide_v_60"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

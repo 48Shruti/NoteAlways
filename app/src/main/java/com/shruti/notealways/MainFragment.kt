@@ -1,6 +1,7 @@
 package com.shruti.notealways
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,7 @@ class MainFragment : Fragment() {
     private var param2: String? = null
     lateinit var binding : FragmentMainBinding
      lateinit var mainActivity: MainActivity
-     lateinit var navController: NavController
+    private val TAG = "MainFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
@@ -52,9 +53,16 @@ class MainFragment : Fragment() {
     }
     fun fabButton(){
         val dialogBinding = FragmentBottomsheetBinding.inflate(layoutInflater)
-        BottomSheetDialog(mainActivity).apply {
+        var bottomSheet = BottomSheetDialog(mainActivity).apply {
             setContentView(dialogBinding.root)
             show()
+        }
+
+        dialogBinding.btnbottomClick.setOnClickListener {
+            Log.e(TAG, "button clicked")
+            bottomSheet.dismiss()
+            mainActivity.navController.navigate(R.id.addNotesFragment)
+
         }
     }
     companion object {
