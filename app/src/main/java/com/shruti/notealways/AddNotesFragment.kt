@@ -44,8 +44,17 @@ class AddNotesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.addnotesFragment = this
     }
-    fun BookmarkClick(){}
-    fun NotesClick(){}
+    fun BookmarkClick(){
+
+    }
+    fun NotesClick(){
+        if(binding.ettitle.text.isNullOrEmpty()){
+            binding.ettitle.error = "Enter title of note"
+        }
+        else{
+
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

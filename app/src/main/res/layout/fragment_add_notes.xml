@@ -22,15 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="right"
-            >
+            android:gravity="right">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/app_name"
+                android:text="@string/create_notes"
                 android:textStyle="bold"
                 android:textSize="@dimen/size_30dp"
-                android:paddingLeft="@dimen/size_10dp"
                 android:layout_weight="1"/>
             <ImageButton
                 android:layout_width="wrap_content"
@@ -49,7 +47,6 @@
                 android:id="@+id/imgbuttondone"
                 android:backgroundTint="@color/white"
                 android:padding="@dimen/size_15dp"
-
                 android:onClick="@{()->addnotesFragment.NotesClick()}"/>
         </LinearLayout>
 
@@ -78,6 +75,5 @@
             android:hint="@string/description"
             android:textSize="@dimen/size_25sp"
             android:id="@+id/etdiscription" />
-
     </LinearLayout>
 </layout>
