@@ -6,9 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
 
@@ -22,12 +26,16 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MainFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(),NotesInterface {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding : FragmentMainBinding
-     lateinit var mainActivity: MainActivity
+    lateinit var mainActivity: MainActivity
+    lateinit var adapter: NotesAdapter
+    var firebase = Firebase.firestore
+    var item  = arrayListOf<NotesDataClass>()
+    lateinit var linearLayout : LinearLayoutManager
     private val TAG = "MainFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +58,24 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.show = true
         binding.mainFragment = this
+        adapter = NotesAdapter(item,this)
+        binding.recylerlist.adapter = adapter
+        linearLayout = LinearLayoutManager(mainActivity)
+        binding.recylerlist.layoutManager = linearLayout
+        getCollection()
+
+    }
+    fun getCollection(){
+        item.clear()
+        firebase.collection("users").get()
+            .addOnSuccessListener {
+                for(items in it.documents){
+                    val firestore = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
+                    firestore.id=  items.id
+                    item.add(firestore)
+                }
+            }
+        adapter.notifyDataSetChanged()
     }
     fun fabButton(){
         val dialogBinding = FragmentBottomsheetBinding.inflate(layoutInflater)
@@ -58,11 +84,13 @@ class MainFragment : Fragment() {
             show()
         }
 
-        dialogBinding.btnbottomClick.setOnClickListener {
-            Log.e(TAG, "button clicked")
+        dialogBinding.btnNoteClick.setOnClickListener {
             bottomSheet.dismiss()
             mainActivity.navController.navigate(R.id.addNotesFragment)
-
+        }
+        dialogBinding.btnTodoClick.setOnClickListener {
+            bottomSheet.dismiss()
+            mainActivity.navController.navigate(R.id.addTodoFragment)
         }
     }
     companion object {
@@ -83,5 +111,13 @@ class MainFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
+        TODO("Not yet implemented")
     }
 }

@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.NavController
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.FragmentAddNotesBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -18,14 +21,19 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddNotesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddNotesFragment : Fragment() {
+class AddNotesFragment : Fragment(),NotesInterface {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding : FragmentAddNotesBinding
+    var firebase =  Firebase.firestore
+    lateinit var adapter: NotesAdapter
+     lateinit var  mainActivity : MainActivity
+     var item = arrayListOf<NotesDataClass>()
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = activity as MainActivity
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -42,19 +50,52 @@ class AddNotesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter = NotesAdapter(item,this)
+
         binding.addnotesFragment = this
     }
     fun BookmarkClick(){
-
     }
     fun NotesClick(){
         if(binding.ettitle.text.isNullOrEmpty()){
-            binding.ettitle.error = "Enter title of note"
+            binding.ettitle.error = "Enter title"
+        }
+        else if(binding.etdescription.text.isNullOrEmpty()){
+            binding.etdescription.error = "Enter description"
         }
         else{
+            firebase.collection("users").add(
+                NotesDataClass(title = binding.ettitle.text.toString(),
+                    description = binding.etdescription.text.toString())
+            )
+                .addOnSuccessListener {
+                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                    getCollection()
+                }
+                .addOnCanceledListener{
+                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                }
+            adapter.notifyDataSetChanged()
+                mainActivity.navController.navigate(R.id.mainFragment)
 
         }
     }
+    fun getCollection(){
+        item.clear()
+        firebase.collection("users").get()
+            .addOnSuccessListener {
+                for(items in it.documents){
+                    val firestore = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
+                    firestore.id=  items.id
+                    item.add(firestore)
+                }
+            }
+        adapter.notifyDataSetChanged()
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -73,5 +114,13 @@ class AddNotesFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
+        TODO("Not yet implemented")
     }
 }

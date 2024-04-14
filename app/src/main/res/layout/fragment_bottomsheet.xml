@@ -29,12 +29,13 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/guide_v_20"
         android:text="@string/notes"
-        android:id="@+id/btnbottomClick"
+        android:id="@+id/btnNoteClick"
         app:layout_constraintTop_toTopOf="@id/guide_h_15"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/todo"
+        android:id="@+id/btnTodoClick"
         app:layout_constraintTop_toTopOf="@id/guide_h_15"
         app:layout_constraintStart_toStartOf="@id/guide_v_60"/>
 

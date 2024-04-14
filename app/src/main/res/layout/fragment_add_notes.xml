@@ -30,6 +30,7 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/size_30dp"
                 android:layout_weight="1"/>
+
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +39,6 @@
                 android:id="@+id/imgbuttonbookmark"
                 android:onClick="@{()->addnotesFragment.BookmarkClick()}"
                 android:backgroundTint="@color/white"
-
                 android:padding="@dimen/size_15dp"/>
             <ImageButton
                 android:layout_width="wrap_content"
@@ -74,6 +74,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/description"
             android:textSize="@dimen/size_25sp"
-            android:id="@+id/etdiscription" />
+            android:id="@+id/etdescription" />
     </LinearLayout>
 </layout>
