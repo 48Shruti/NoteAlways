@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_mainFragment_to_bottomsheetFragment"
             app:destination="@id/bottomsheetFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_todoFragment"
+            app:destination="@id/todoFragment" />
     </fragment>
     <fragment
         android:id="@+id/bottomsheetFragment"
@@ -34,4 +37,9 @@
         android:name="com.shruti.notealways.AddNotesFragment"
         tools:layout="@layout/fragment_add_notes"
         android:label="AddNotesFragment" />
+    <fragment
+        android:id="@+id/todoFragment"
+        android:name="com.shruti.notealways.TodoFragment"
+        android:label="fragment_todo"
+        tools:layout="@layout/fragment_todo" />
 </navigation>

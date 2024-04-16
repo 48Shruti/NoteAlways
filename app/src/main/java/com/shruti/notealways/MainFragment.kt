@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.shruti.notealways.databinding.BottomsheetTodoBinding
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
 
@@ -62,6 +63,9 @@ class MainFragment : Fragment(),NotesInterface {
         binding.recylerlist.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recylerlist.layoutManager = linearLayout
+        binding.btntodo.setOnClickListener{
+            mainActivity.navController.navigate(R.id.todoFragment)
+        }
         getCollection()
 
     }
@@ -77,7 +81,7 @@ class MainFragment : Fragment(),NotesInterface {
             }
         adapter.notifyDataSetChanged()
     }
-    fun fabButton(){
+    fun fabButton() {
         val dialogBinding = FragmentBottomsheetBinding.inflate(layoutInflater)
         var bottomSheet = BottomSheetDialog(mainActivity).apply {
             setContentView(dialogBinding.root)
@@ -90,7 +94,12 @@ class MainFragment : Fragment(),NotesInterface {
         }
         dialogBinding.btnTodoClick.setOnClickListener {
             bottomSheet.dismiss()
-            mainActivity.navController.navigate(R.id.addTodoFragment)
+            val dialogBindingTodo = BottomsheetTodoBinding.inflate(layoutInflater)
+            var bottomSheettodo = BottomSheetDialog(mainActivity).apply {
+                setContentView(dialogBindingTodo.root)
+                show()
+                //mainActivity.navController.navigate(R.id.addTodoFragment)
+            }
         }
     }
     companion object {

@@ -1,4 +1,4 @@
 package com.shruti.notealways
 
-class TodoDataClass {
-}
+data class TodoDataClass(val name : String ?= null,
+    val id :String ?= null)
