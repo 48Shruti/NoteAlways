@@ -21,17 +21,9 @@
         android:name="com.shruti.notealways.BottomsheetFragment"
         android:label="BottomsheetFragment" >
         <action
-            android:id="@+id/action_bottomsheetFragment_to_addTodoFragment"
-            app:destination="@id/addTodoFragment" />
-        <action
             android:id="@+id/action_bottomsheetFragment_to_addNotesFragment"
             app:destination="@id/addNotesFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/addTodoFragment"
-        android:name="com.shruti.notealways.AddTodoFragment"
-        android:label="fragment_add_todo"
-        tools:layout="@layout/fragment_add_todo" />
     <fragment
         android:id="@+id/addNotesFragment"
         android:name="com.shruti.notealways.AddNotesFragment"

@@ -1,10 +1,16 @@
 package com.shruti.notealways
 
+import android.icu.text.Transliterator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.shruti.notealways.databinding.FragmentMainBinding
+import com.shruti.notealways.databinding.FragmentTodoBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -16,13 +22,19 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TodoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TodoFragment : Fragment() {
+class TodoFragment : Fragment() , TodoInterface{
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    lateinit var binding : FragmentTodoBinding
+    lateinit var mainActivity: MainActivity
+    lateinit var adapter: TodoAdapter
+    var firebase = Firebase.firestore
+    var item  = arrayListOf<TodoDataClass>()
+    lateinit var linearLayout : LinearLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = activity as MainActivity
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -33,8 +45,29 @@ class TodoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_todo, container, false)
+        binding = FragmentTodoBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter = TodoAdapter(item,this)
+        binding.recycler.adapter = adapter
+        linearLayout = LinearLayoutManager(mainActivity)
+        binding.recycler.layoutManager = linearLayout
+        getCollection()
+    }
+    fun getCollection(){
+        item.clear()
+        firebase.collection("users").get()
+            .addOnSuccessListener {
+                for(items in it.documents){
+                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
+                    firestore.id=  items.id
+                    item.add(firestore)
+                }
+            }
+        adapter.notifyDataSetChanged()
     }
 
     companion object {
@@ -55,5 +88,9 @@ class TodoFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun delete(notesDataClass: NotesDataClass, position: Transliterator.Position) {
+        TODO("Not yet implemented")
     }
 }

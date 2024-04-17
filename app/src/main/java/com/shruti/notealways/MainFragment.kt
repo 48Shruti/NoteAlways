@@ -1,5 +1,7 @@
 package com.shruti.notealways
 
+import android.app.DatePickerDialog
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.BottomsheetTodoBinding
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -98,10 +102,47 @@ class MainFragment : Fragment(),NotesInterface {
             var bottomSheettodo = BottomSheetDialog(mainActivity).apply {
                 setContentView(dialogBindingTodo.root)
                 show()
-                //mainActivity.navController.navigate(R.id.addTodoFragment)
+            }
+            dialogBindingTodo.btnsetdata.setOnClickListener{
+                var dialog = DatePickerDialog(mainActivity)
+                dialog.setOnDateSetListener{view,year,month,dayOfMonth ->
+                    var simpleDateFormat = SimpleDateFormat("dd,MMM,yyyy")
+                    var calendar = Calendar.getInstance()
+                    calendar.set(Calendar.YEAR,year)
+                    calendar.set(Calendar.MONTH,month)
+                    calendar.set(Calendar.DATE,dayOfMonth)
+                    var stringDate = simpleDateFormat.format(calendar.time)
+                    dialogBindingTodo.btnsetdata.setText(stringDate)
+                }
+                dialog.show()
+            }
+            dialogBindingTodo.tvdone.setOnClickListener{
+                if(dialogBindingTodo.ettodo.text.isNullOrEmpty()){
+                    dialogBindingTodo.ettodo.error = "Enter task"
+                }
+                else{
+                    bottomSheettodo.dismiss()
+                    firebase.collection("users").add(
+                        NotesDataClass(title = dialogBindingTodo.ettodo.text.toString())
+                    )
+                        .addOnSuccessListener {
+                            Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+
+                        }
+                        .addOnCanceledListener{
+                            Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                        }
+                    adapter.notifyDataSetChanged()
+                    mainActivity.navController.navigate(R.id.mainFragment)
+                }
+                Toast.makeText(mainActivity,"yes its working", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -121,6 +162,7 @@ class MainFragment : Fragment(),NotesInterface {
                 }
             }
     }
+
 
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
         TODO("Not yet implemented")

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
 class TodoAdapter(val item : ArrayList<TodoDataClass>,todoInterface: TodoInterface) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
     class ViewHolder(val view : View):RecyclerView.ViewHolder(view) {
         var title = view.findViewById<TextView>(R.id.titletodo)
+        var time = view.findViewById<TextView>(R.id.datetodo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,6 +23,7 @@ class TodoAdapter(val item : ArrayList<TodoDataClass>,todoInterface: TodoInterfa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.setText(item[position].name)
+        holder.title.setText(item[position].title)
+        holder.time.setText(item[position].time)
     }
 }

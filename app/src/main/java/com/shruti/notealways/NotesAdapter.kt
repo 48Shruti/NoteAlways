@@ -13,8 +13,9 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
     class ViewHolder (var view : View) : RecyclerView.ViewHolder(view) {
         var title  = view.findViewById<TextView>(R.id.tvtitleview)
         var description = view.findViewById<TextView>(R.id.tvdescriptionview)
-        var update = view.findViewById<ImageButton>(R.id.btnupdate)
-        var delete = view.findViewById<ImageButton>(R.id.btndelete)
+        var time = view.findViewById<TextView>(R.id.tvdateview)
+       // var update = view.findViewById<ImageButton>(R.id.btnupdate)
+        //var delete = view.findViewById<ImageButton>(R.id.btndelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,12 +29,13 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.setText(item[position].title)
         holder.description.setText(item[position].description)
-        holder.update.setOnClickListener {
-            notesInterface.notesUpdate(item[position],position)
-        }
-        holder.delete.setOnClickListener{
-            notesInterface.notesDelete(item[position],position)
-        }
+        holder.time.setText(item[position].time)
+//        holder.update.setOnClickListener {
+//            notesInterface.notesUpdate(item[position],position)
+//        }
+//        holder.delete.setOnClickListener{
+//            notesInterface.notesDelete(item[position],position)
+//        }
     }
 
 

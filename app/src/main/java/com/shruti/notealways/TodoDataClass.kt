@@ -1,4 +1,8 @@
 package com.shruti.notealways
 
-data class TodoDataClass(val name : String ?= null,
-    val id :String ?= null)
+import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
+
+data class TodoDataClass(var title : String ?= "",
+                         var id :String ?= "",
+    var time : String = SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().time))
