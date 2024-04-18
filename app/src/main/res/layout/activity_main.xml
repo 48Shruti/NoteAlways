@@ -17,7 +17,6 @@
         android:text="@string/notealways"
         android:textStyle="bold"
         android:textSize="@dimen/size_30dp"
-        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:gravity="center"

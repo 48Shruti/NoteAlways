@@ -51,7 +51,6 @@ class AddNotesFragment : Fragment(),NotesInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = NotesAdapter(item,this)
-
         binding.addnotesFragment = this
     }
     fun BookmarkClick(){
@@ -64,28 +63,28 @@ class AddNotesFragment : Fragment(),NotesInterface {
             binding.etdescription.error = "Enter description"
         }
         else{
-            firebase.collection("users").add(
+            firebase.collection("note").add(
                 NotesDataClass(title = binding.ettitle.text.toString(),
                     description = binding.etdescription.text.toString())
             )
                 .addOnSuccessListener {
                     Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
-                    getCollection()
+                    getCollectionNote()
                 }
                 .addOnCanceledListener{
-                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mainActivity, "Data cancel",Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mainActivity, "Data failure",Toast.LENGTH_SHORT).show()
                 }
             adapter.notifyDataSetChanged()
                 mainActivity.navController.navigate(R.id.mainFragment)
 
         }
     }
-    fun getCollection(){
+    fun getCollectionNote(){
         item.clear()
-        firebase.collection("users").get()
+        firebase.collection("note").get()
             .addOnSuccessListener {
                 for(items in it.documents){
                     val firestore = items.toObject(NotesDataClass::class.java)?: NotesDataClass()

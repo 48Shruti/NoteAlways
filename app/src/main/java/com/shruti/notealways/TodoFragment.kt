@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -55,20 +56,19 @@ class TodoFragment : Fragment() , TodoInterface{
         binding.recycler.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayout
-        getCollection()
+        getCollectionTodo()
     }
-    fun getCollection(){
-        item.clear()
-        firebase.collection("users").get()
-            .addOnSuccessListener {
-                for(items in it.documents){
-                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-                    firestore.id=  items.id
-                    item.add(firestore)
-                }
-            }
-        adapter.notifyDataSetChanged()
-    }
+//    fun getCollectionTodo(){
+//        firebase.collection("todo").get()
+//            .addOnSuccessListener {
+//                for(items in it.documents){
+//                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
+//                    firestore.id=  items.id
+//                    item.add(firestore)
+//                }
+//            }
+//        adapter.notifyDataSetChanged()
+//    }
 
     companion object {
         /**
@@ -90,7 +90,22 @@ class TodoFragment : Fragment() , TodoInterface{
             }
     }
 
-    override fun delete(notesDataClass: NotesDataClass, position: Transliterator.Position) {
+    override fun delete(todoDataClass: TodoDataClass, position: Transliterator.Position) {
         TODO("Not yet implemented")
     }
+
+    override fun getCollectionTodo() {
+        firebase.collection("todo").get()
+            .addOnSuccessListener {
+                for(items in it.documents){
+                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
+                    firestore.id=  items.id
+                    item.add(firestore)
+                }
+                Toast.makeText(mainActivity,"Todo is added",Toast.LENGTH_SHORT).show()
+            }
+        adapter.notifyDataSetChanged()
+    }
+
+
 }

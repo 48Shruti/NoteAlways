@@ -7,5 +7,5 @@ data class NotesDataClass(
     val title : String ?= "",
     val description : String ?= "",
     var id : String ?= "",
-    var time :String = SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().time)
+    var date :String = SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().time)
 )

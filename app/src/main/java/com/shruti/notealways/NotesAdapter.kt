@@ -13,7 +13,7 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
     class ViewHolder (var view : View) : RecyclerView.ViewHolder(view) {
         var title  = view.findViewById<TextView>(R.id.tvtitleview)
         var description = view.findViewById<TextView>(R.id.tvdescriptionview)
-        var time = view.findViewById<TextView>(R.id.tvdateview)
+        var date = view.findViewById<TextView>(R.id.tvdateview)
        // var update = view.findViewById<ImageButton>(R.id.btnupdate)
         //var delete = view.findViewById<ImageButton>(R.id.btndelete)
     }
@@ -29,7 +29,7 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.setText(item[position].title)
         holder.description.setText(item[position].description)
-        holder.time.setText(item[position].time)
+        holder.date.setText(item[position].date)
 //        holder.update.setOnClickListener {
 //            notesInterface.notesUpdate(item[position],position)
 //        }

@@ -10,6 +10,7 @@
                     name="show"
                     type="Boolean" />
         </data>
+
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -91,10 +92,9 @@
                                     android:layout_marginTop="@dimen/size_15dp"
                                     android:src="@drawable/icon_bookmarks"/>
                                 <TextView
-                                    android:layout_width="70dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="35dp"
-                                    android:textColor="@color/black"
-                                    android:layout_gravity="center"
+                                    android:gravity="center"
                                     android:textSize="@dimen/size_15dp"
                                     android:text="@string/bookmark"
                                     android:textStyle="bold"/>
@@ -124,10 +124,10 @@
                                     android:layout_marginTop="@dimen/size_15dp"
                                     android:src="@drawable/icon_checklist"/>
                                 <TextView
-                                    android:layout_width="70dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="35dp"
-                                    android:textColor="@color/black"
-                                    android:layout_gravity="center"
+
+                                    android:gravity="center"
                                     android:textSize="@dimen/size_15dp"
                                     android:text="@string/todolist"
                                     android:textStyle="bold"/>
@@ -154,4 +154,5 @@
             app:layout_constraintTop_toBottomOf="@id/guide_h_90" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

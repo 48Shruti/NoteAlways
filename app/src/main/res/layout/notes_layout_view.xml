@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/size_5dp"
+    android:layout_margin="@dimen/size_3dp"
     android:elevation="@dimen/size_10dp"
-    app:cardCornerRadius="@dimen/size_5dp">
+    app:cardCornerRadius="@dimen/size_15dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Title"
-        android:textColor="@color/black"
-        android:textSize="@dimen/size_30dp"
+        android:textSize="@dimen/size_20dp"
+        android:padding="@dimen/size_5dp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/tvtitleview"/>
@@ -24,16 +24,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Description"
-        android:textColor="@color/black"
-        android:textSize="@dimen/size_25sp"/>
+        android:padding="@dimen/size_5dp"
+        android:textSize="@dimen/size_15dp"/>
     <TextView
         android:id="@+id/tvdateview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/date"
+        android:paddingRight="@dimen/size_5dp"
         android:textColor="@color/black"
         android:layout_gravity="right"
-        android:textSize="@dimen/size_15dp"/>
+        android:textSize="@dimen/size_10dp"/>
 
 </LinearLayout>
 </androidx.cardview.widget.CardView>
