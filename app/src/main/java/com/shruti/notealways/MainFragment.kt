@@ -21,6 +21,7 @@ import com.shruti.notealways.databinding.BottomsheetTodoBinding
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
 import java.util.Calendar
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -123,12 +124,13 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                 else{
 
                     firebase.collection("todo").add(
-                        TodoDataClass(title = dialogBindingTodo.ettodo.text.toString())
+                        TodoDataClass(title = dialogBindingTodo.ettodo.text.toString(),
+                            time = dialogBindingTodo.btnsetdata.text.toString())
                     )
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
                                 getCollectionTodo()
-                            System.out.println("its working vanshika")
+
                         }
                         .addOnCanceledListener{
                             Toast.makeText(mainActivity, "Data cancel",Toast.LENGTH_SHORT).show()

@@ -23,6 +23,7 @@
         android:id="@+id/titletodo"
         android:textStyle="bold"
         android:text="todo"/>
+
     <TextView
         android:id="@+id/datetodo"
         android:layout_width="wrap_content"
@@ -31,5 +32,6 @@
         android:paddingRight="@dimen/size_5dp"
         android:layout_gravity="bottom"
         android:textSize="@dimen/size_10dp"/>
+
 </LinearLayout>
     </androidx.cardview.widget.CardView>

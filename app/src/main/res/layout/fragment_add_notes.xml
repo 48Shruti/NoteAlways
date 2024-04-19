@@ -41,31 +41,28 @@
                 android:padding="@dimen/size_15dp"
                 android:onClick="@{()->addnotesFragment.NotesClick()}"/>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/size_20dp"
-            android:text="@string/title"
-            android:textSize="@dimen/size_25sp"
-            android:textStyle="bold"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title"
             android:textSize="@dimen/size_25sp"
-            android:id="@+id/ettitle"/>
+            android:id="@+id/ettitle"
+            android:background="@android:color/transparent"/>
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/description"
-            android:textSize="@dimen/size_25sp"
-            android:textStyle="bold"/>
+            android:text="@string/date"
+            android:textSize="@dimen/size_10dp"
+            android:padding="@dimen/size_5dp"
+            android:textColor="#808080"
+            android:id="@+id/tvdateview" />
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="@string/description"
             android:textSize="@dimen/size_25sp"
-            android:id="@+id/etdescription" />
+            android:gravity="top|start"
+            android:id="@+id/etdescription"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 </layout>

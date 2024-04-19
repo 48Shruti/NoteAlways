@@ -30,7 +30,6 @@ class AddNotesFragment : Fragment(),NotesInterface {
     lateinit var adapter: NotesAdapter
      lateinit var  mainActivity : MainActivity
      var item = arrayListOf<NotesDataClass>()
-    lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
