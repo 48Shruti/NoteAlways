@@ -118,6 +118,10 @@ class AddNotesFragment : Fragment(),NotesInterface {
         TODO("Not yet implemented")
     }
 
+    override fun notesClick(notesDataClass: NotesDataClass) {
+        TODO("Not yet implemented")
+    }
+
     override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
         TODO("Not yet implemented")
     }

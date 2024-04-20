@@ -30,6 +30,9 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
         holder.title.setText(item[position].title)
         holder.description.setText(item[position].description)
         holder.date.setText(item[position].date)
+        holder.itemView.setOnClickListener{
+            notesInterface.notesClick(item[position])
+        }
 //        holder.update.setOnClickListener {
 //            notesInterface.notesUpdate(item[position],position)
 //        }

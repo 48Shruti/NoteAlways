@@ -70,10 +70,11 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         binding.recylerlist.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recylerlist.layoutManager = linearLayout
+        getCollectionNote()
         binding.btntodo.setOnClickListener{
             mainActivity.navController.navigate(R.id.todoFragment)
         }
-        getCollectionNote()
+
     }
     fun getCollectionNote(){
         firebase.collection("note").get()
@@ -125,7 +126,8 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
 
                     firebase.collection("todo").add(
                         TodoDataClass(title = dialogBindingTodo.ettodo.text.toString(),
-                            time = dialogBindingTodo.btnsetdata.text.toString())
+                            time = dialogBindingTodo.btnsetdata.text.toString()),
+
                     )
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
@@ -183,11 +185,18 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         TODO("Not yet implemented")
     }
 
+    override fun notesClick(notesDataClass: NotesDataClass) {
+//        mainActivity.navController.navigate(R.id.addNotesFragment)
+//        getCollectionNote()
+    }
+
     override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
         TODO("Not yet implemented")
     }
 
-    override fun delete(todoDataClass: TodoDataClass, position: Transliterator.Position) {
+
+
+    override fun delete(todoDataClass: TodoDataClass, position: Int) {
         TODO("Not yet implemented")
     }
 
@@ -204,4 +213,10 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
             }
         adapter.notifyDataSetChanged()
     }
+
+    override fun todoMark(todoDataClass: TodoDataClass, position: Int) {
+        firebase.c
+    }
+
+
 }

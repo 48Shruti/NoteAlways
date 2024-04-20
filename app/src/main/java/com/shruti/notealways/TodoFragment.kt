@@ -23,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TodoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TodoFragment : Fragment() , TodoInterface{
+ class TodoFragment : Fragment() , TodoInterface{
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -58,17 +58,7 @@ class TodoFragment : Fragment() , TodoInterface{
         binding.recycler.layoutManager = linearLayout
         getCollectionTodo()
     }
-//    fun getCollectionTodo(){
-//        firebase.collection("todo").get()
-//            .addOnSuccessListener {
-//                for(items in it.documents){
-//                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-//                    firestore.id=  items.id
-//                    item.add(firestore)
-//                }
-//            }
-//        adapter.notifyDataSetChanged()
-//    }
+
 
     companion object {
         /**
@@ -90,8 +80,10 @@ class TodoFragment : Fragment() , TodoInterface{
             }
     }
 
-    override fun delete(todoDataClass: TodoDataClass, position: Transliterator.Position) {
+
+    override fun delete(todoDataClass: TodoDataClass, position: Int) {
         TODO("Not yet implemented")
+        
     }
 
     override fun getCollectionTodo() {
@@ -105,6 +97,10 @@ class TodoFragment : Fragment() , TodoInterface{
                 Toast.makeText(mainActivity,"Todo is added",Toast.LENGTH_SHORT).show()
             }
         adapter.notifyDataSetChanged()
+    }
+
+    override fun todoMark(todoDataClass: TodoDataClass, position: Int) {
+
     }
 
 
