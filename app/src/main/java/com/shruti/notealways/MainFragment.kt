@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.BottomsheetTodoBinding
@@ -40,7 +41,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     lateinit var binding : FragmentMainBinding
     lateinit var mainActivity: MainActivity
     lateinit var adapter: NotesAdapter
-    var firebase = Firebase.firestore
+    val firebase = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
     lateinit var linearLayout : LinearLayoutManager
@@ -80,9 +81,9 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         firebase.collection("note").get()
             .addOnSuccessListener {
                 for(items in it.documents){
-                    val firestore = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
-                    firestore.id=  items.id
-                    itemNote.add(firestore)
+                    val firestoreClass = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
+                    firestoreClass.id=  items.id
+                    itemNote.add(firestoreClass)
                 }
             }
         adapter.notifyDataSetChanged()
@@ -123,7 +124,6 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                     dialogBindingTodo.ettodo.error = "Enter task"
                 }
                 else{
-
                     firebase.collection("todo").add(
                         TodoDataClass(title = dialogBindingTodo.ettodo.text.toString(),
                             time = dialogBindingTodo.btnsetdata.text.toString()),
@@ -132,13 +132,12 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
                                 getCollectionTodo()
-
-                        }
-                        .addOnCanceledListener{
-                            Toast.makeText(mainActivity, "Data cancel",Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener {
                             Toast.makeText(mainActivity, "Data failure",Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnCanceledListener{
+                            Toast.makeText(mainActivity, "Data cancel",Toast.LENGTH_SHORT).show()
                         }
                     adapter.notifyDataSetChanged()
                     bottomSheettodo.dismiss()
@@ -204,9 +203,9 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         firebase.collection("todo").get()
             .addOnSuccessListener {
                 for(items in it.documents){
-                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-                    firestore.id=  items.id
-                    itemTodo.add(firestore)
+                    val firestoreClass = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
+                    firestoreClass.id=  items.id
+                    itemTodo.add(firestoreClass)
                 }
                 Toast.makeText(mainActivity,"Todo is added",Toast.LENGTH_SHORT).show()
 
@@ -215,7 +214,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     }
 
     override fun todoMark(todoDataClass: TodoDataClass, position: Int) {
-        firebase.c
+
     }
 
 

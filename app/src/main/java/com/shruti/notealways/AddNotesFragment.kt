@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.NavController
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.FragmentAddNotesBinding
@@ -26,7 +27,7 @@ class AddNotesFragment : Fragment(),NotesInterface {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding : FragmentAddNotesBinding
-    var firebase =  Firebase.firestore
+    var firestore =  FirebaseFirestore.getInstance()
     lateinit var adapter: NotesAdapter
      lateinit var  mainActivity : MainActivity
      var item = arrayListOf<NotesDataClass>()
@@ -62,7 +63,7 @@ class AddNotesFragment : Fragment(),NotesInterface {
             binding.etdescription.error = "Enter description"
         }
         else{
-            firebase.collection("note").add(
+            firestore.collection("note").add(
                 NotesDataClass(title = binding.ettitle.text.toString(),
                     description = binding.etdescription.text.toString())
             )
@@ -83,12 +84,12 @@ class AddNotesFragment : Fragment(),NotesInterface {
     }
     fun getCollectionNote(){
         item.clear()
-        firebase.collection("note").get()
+        firestore.collection("note").get()
             .addOnSuccessListener {
                 for(items in it.documents){
-                    val firestore = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
-                    firestore.id=  items.id
-                    item.add(firestore)
+                    var firestoreClass = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
+                    firestoreClass.id=  items.id
+                    item.add(firestoreClass)
                 }
             }
         adapter.notifyDataSetChanged()
