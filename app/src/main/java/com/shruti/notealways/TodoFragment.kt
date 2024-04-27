@@ -1,13 +1,16 @@
 package com.shruti.notealways
 
+import android.content.ContentValues
 import android.icu.text.Transliterator
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.FragmentMainBinding
@@ -30,7 +33,7 @@ private const val ARG_PARAM2 = "param2"
     lateinit var binding : FragmentTodoBinding
     lateinit var mainActivity: MainActivity
     lateinit var adapter: TodoAdapter
-    var firebase = Firebase.firestore
+    var firestore = FirebaseFirestore.getInstance()
     var item  = arrayListOf<TodoDataClass>()
     lateinit var linearLayout : LinearLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,16 +90,19 @@ private const val ARG_PARAM2 = "param2"
     }
 
     override fun getCollectionTodo() {
-        firebase.collection("todo").get()
-            .addOnSuccessListener {
-                for(items in it.documents){
-                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-                    firestore.id=  items.id
-                    item.add(firestore)
-                }
-                Toast.makeText(mainActivity,"Todo is added",Toast.LENGTH_SHORT).show()
+        item.clear()
+        firestore.collection("todo").addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(ContentValues.TAG, "Listen failed", e)
+                return@addSnapshotListener
             }
-        adapter.notifyDataSetChanged()
+            for (dc in snapshot!!) {
+                val firestoreClass = dc.toObject(TodoDataClass::class.java)
+                firestoreClass.id = dc.id
+                item.add(firestoreClass)
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun todoMark(todoDataClass: TodoDataClass, position: Int) {

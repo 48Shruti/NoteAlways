@@ -1,6 +1,7 @@
 package com.shruti.notealways
 
 import android.app.DatePickerDialog
+import android.content.ContentValues
 import android.icu.text.SimpleDateFormat
 import android.icu.text.Transliterator
 import android.os.Bundle
@@ -41,7 +42,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     lateinit var binding : FragmentMainBinding
     lateinit var mainActivity: MainActivity
     lateinit var adapter: NotesAdapter
-    val firebase = FirebaseFirestore.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
     lateinit var linearLayout : LinearLayoutManager
@@ -72,21 +73,26 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recylerlist.layoutManager = linearLayout
         getCollectionNote()
+        getCollectionTodo()
         binding.btntodo.setOnClickListener{
             mainActivity.navController.navigate(R.id.todoFragment)
         }
 
     }
-    fun getCollectionNote(){
-        firebase.collection("note").get()
-            .addOnSuccessListener {
-                for(items in it.documents){
-                    val firestoreClass = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
-                    firestoreClass.id=  items.id
-                    itemNote.add(firestoreClass)
-                }
+    private fun getCollectionNote(){
+        itemNote.clear()
+        firestore.collection("note").addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(ContentValues.TAG, "Listen failed", e)
+                return@addSnapshotListener
             }
-        adapter.notifyDataSetChanged()
+            for (dc in snapshot!!) {
+                val firestoreClass = dc.toObject(NotesDataClass::class.java)
+                firestoreClass.id = dc.id
+                itemNote.add(firestoreClass)
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
     fun fabButton() {
         val dialogBinding = FragmentBottomsheetBinding.inflate(layoutInflater)
@@ -124,10 +130,9 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                     dialogBindingTodo.ettodo.error = "Enter task"
                 }
                 else{
-                    firebase.collection("todo").add(
+                    firestore.collection("todo").add(
                         TodoDataClass(title = dialogBindingTodo.ettodo.text.toString(),
                             time = dialogBindingTodo.btnsetdata.text.toString()),
-
                     )
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
@@ -141,24 +146,11 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                         }
                     adapter.notifyDataSetChanged()
                     bottomSheettodo.dismiss()
-                    //mainActivity.navController.navigate(R.id.mainFragment)
                 }
-               // Toast.makeText(mainActivity,"yes its working", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-//    fun getCollectionTodo(){
-//        firebase.collection("todo").get()
-//            .addOnSuccessListener {
-//                for(items in it.documents){
-//                    val firestore = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-//                    firestore.id=  items.id
-//                    itemTodo.add(firestore)
-//                }
-//            }
-//        adapter.notifyDataSetChanged()
-//    }
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -200,17 +192,19 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     }
 
     override fun getCollectionTodo() {
-        firebase.collection("todo").get()
-            .addOnSuccessListener {
-                for(items in it.documents){
-                    val firestoreClass = items.toObject(TodoDataClass::class.java)?: TodoDataClass()
-                    firestoreClass.id=  items.id
-                    itemTodo.add(firestoreClass)
-                }
-                Toast.makeText(mainActivity,"Todo is added",Toast.LENGTH_SHORT).show()
-
+        itemTodo.clear()
+        firestore.collection("todo").addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(ContentValues.TAG, "Listen failed", e)
+                return@addSnapshotListener
             }
-        adapter.notifyDataSetChanged()
+            for (dc in snapshot!!) {
+                val firestoreClass = dc.toObject(TodoDataClass::class.java)
+                firestoreClass.id = dc.id
+                itemTodo.add(firestoreClass)
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun todoMark(todoDataClass: TodoDataClass, position: Int) {

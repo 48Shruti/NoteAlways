@@ -1,6 +1,8 @@
 package com.shruti.notealways
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +54,7 @@ class AddNotesFragment : Fragment(),NotesInterface {
         super.onViewCreated(view, savedInstanceState)
         adapter = NotesAdapter(item,this)
         binding.addnotesFragment = this
+        getCollectionNote()
     }
     fun BookmarkClick(){
     }
@@ -84,15 +87,18 @@ class AddNotesFragment : Fragment(),NotesInterface {
     }
     fun getCollectionNote(){
         item.clear()
-        firestore.collection("note").get()
-            .addOnSuccessListener {
-                for(items in it.documents){
-                    var firestoreClass = items.toObject(NotesDataClass::class.java)?: NotesDataClass()
-                    firestoreClass.id=  items.id
-                    item.add(firestoreClass)
-                }
+        firestore.collection("note").addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(ContentValues.TAG, "Listen failed", e)
+                return@addSnapshotListener
             }
-        adapter.notifyDataSetChanged()
+            for (dc in snapshot!!) {
+                val firestoreClass = dc.toObject(NotesDataClass::class.java)
+                firestoreClass.id = dc.id
+                item.add(firestoreClass)
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
 
     companion object {
