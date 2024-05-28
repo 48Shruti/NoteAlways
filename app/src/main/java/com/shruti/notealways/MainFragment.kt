@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,6 +46,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     val firestore = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
+    lateinit var notesViewModel: NotesViewModel
     lateinit var linearLayout : LinearLayoutManager
     private val TAG = "MainFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +80,8 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
             mainActivity.navController.navigate(R.id.todoFragment)
         }
 
+
+
     }
     private fun getCollectionNote(){
         itemNote.clear()
@@ -104,6 +108,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         dialogBinding.btnNoteClick.setOnClickListener {
             bottomSheet.dismiss()
             mainActivity.navController.navigate(R.id.addNotesFragment)
+
         }
         dialogBinding.btnTodoClick.setOnClickListener {
             bottomSheet.dismiss()
@@ -173,12 +178,19 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
 
 
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
+       mainActivity.navController.navigate(R.id.addNotesFragment)
+        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
+
     }
 
     override fun notesClick(notesDataClass: NotesDataClass) {
-//        mainActivity.navController.navigate(R.id.addNotesFragment)
+
 //        getCollectionNote()
+
+    }
+
+    override fun notesId(notesDataClass: NotesDataClass, id: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {

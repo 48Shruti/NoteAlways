@@ -48,14 +48,6 @@
             android:textSize="@dimen/size_25sp"
             android:id="@+id/ettitle"
             android:background="@android:color/transparent"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textSize="@dimen/size_10dp"
-            android:padding="@dimen/size_5dp"
-            android:textColor="#808080"
-            android:id="@+id/tvdateview" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"

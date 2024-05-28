@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -31,15 +33,17 @@ class AddNotesFragment : Fragment(),NotesInterface {
     lateinit var binding : FragmentAddNotesBinding
     var firestore =  FirebaseFirestore.getInstance()
     lateinit var adapter: NotesAdapter
+    lateinit var notesViewModel: NotesViewModel
      lateinit var  mainActivity : MainActivity
      var item = arrayListOf<NotesDataClass>()
+    var noteId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        arguments?.let {
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
+//        }
     }
 
     override fun onCreateView(
@@ -52,6 +56,12 @@ class AddNotesFragment : Fragment(),NotesInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        arguments?.let {
+//            noteId = it.getInt("id",-1)
+//            if(noteId > -1){
+//                getCollectionNote()
+//            }
+//        }
         adapter = NotesAdapter(item,this)
         binding.addnotesFragment = this
         getCollectionNote()
@@ -65,25 +75,28 @@ class AddNotesFragment : Fragment(),NotesInterface {
         else if(binding.etdescription.text.isNullOrEmpty()){
             binding.etdescription.error = "Enter description"
         }
-        else{
-            firestore.collection("note").add(
-                NotesDataClass(title = binding.ettitle.text.toString(),
-                    description = binding.etdescription.text.toString())
-            )
-                .addOnSuccessListener {
-                    Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
-                    getCollectionNote()
-                }
-                .addOnCanceledListener{
-                    Toast.makeText(mainActivity, "Data cancel",Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(mainActivity, "Data failure",Toast.LENGTH_SHORT).show()
-                }
-            adapter.notifyDataSetChanged()
+        else {
+
+                firestore.collection("note").add(
+                    NotesDataClass(
+                        title = binding.ettitle.text.toString(),
+                        description = binding.etdescription.text.toString()
+                    )
+                )
+                    .addOnSuccessListener {
+                        Toast.makeText(mainActivity, "Data Added", Toast.LENGTH_SHORT).show()
+                        getCollectionNote()
+                    }
+                    .addOnCanceledListener {
+                        Toast.makeText(mainActivity, "Data cancel", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(mainActivity, "Data failure", Toast.LENGTH_SHORT).show()
+                    }
+                adapter.notifyDataSetChanged()
                 mainActivity.navController.navigate(R.id.mainFragment)
 
-        }
+            }
     }
     fun getCollectionNote(){
         item.clear()
@@ -122,10 +135,36 @@ class AddNotesFragment : Fragment(),NotesInterface {
     }
 
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
+        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
+
+//        binding.ettitle.setText(notesDataClass.title)
+//        binding.etdescription.setText(notesDataClass.description)
+//        var updateNotes =
+//            NotesDataClass(
+//                title = binding.ettitle.text.toString(),
+//                description =binding.etdescription.text.toString()
+//            )
+//         firestore.collection("note").document(notesDataClass.id ?: "")
+//             .set(updateNotes)
+//            .addOnSuccessListener {
+//                Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT).show()
+//                getCollectionNote()
+//            }
+//            .addOnCanceledListener {
+//                Toast.makeText(mainActivity, "Data  update cancel", Toast.LENGTH_SHORT).show()
+//            }
+//            .addOnFailureListener {
+//                Toast.makeText(mainActivity, "Data update failure", Toast.LENGTH_SHORT).show()
+//            }
+//        adapter.notifyDataSetChanged()
+//        mainActivity.navController.navigate(R.id.mainFragment)
     }
 
     override fun notesClick(notesDataClass: NotesDataClass) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notesId(notesDataClass: NotesDataClass, id: Int) {
         TODO("Not yet implemented")
     }
 
