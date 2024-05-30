@@ -15,7 +15,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -42,6 +44,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     private var param2: String? = null
     lateinit var binding : FragmentMainBinding
     lateinit var mainActivity: MainActivity
+    lateinit var notesDataClass: NotesDataClass
     lateinit var adapter: NotesAdapter
     val firestore = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
@@ -75,6 +78,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         binding.recylerlist.layoutManager = linearLayout
         getCollectionNote()
         getCollectionTodo()
+        delete()
         binding.btntodo.setOnClickListener{
             mainActivity.navController.navigate(R.id.todoFragment)
         }
@@ -153,6 +157,39 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                 }
             }
         }
+    }
+
+    fun delete(){
+        val simpleItemTouchCallback =  object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT
+                or ItemTouchHelper.RIGHT
+                or ItemTouchHelper.DOWN or ItemTouchHelper.UP){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                Toast.makeText(mainActivity,"on move",Toast.LENGTH_SHORT).show()
+                return false
+            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                Toast.makeText(mainActivity,"on Swiped",Toast.LENGTH_SHORT).show()
+                firestore.collection("users").document(notesDataClass.id?:"")
+                    .delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(mainActivity,"Data delete",Toast.LENGTH_SHORT).show()
+                        getCollectionNote()
+                    }
+                    .addOnCanceledListener {
+                        Toast.makeText(mainActivity,"Data Cancel",Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener{
+                        Toast.makeText(mainActivity,"Data fail",Toast.LENGTH_SHORT).show()
+                    }
+                adapter.notifyDataSetChanged()
+            }
+
+        }
+        
     }
 
     companion object {
