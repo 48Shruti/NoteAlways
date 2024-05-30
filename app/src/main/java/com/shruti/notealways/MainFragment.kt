@@ -46,7 +46,6 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     val firestore = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
-    lateinit var notesViewModel: NotesViewModel
     lateinit var linearLayout : LinearLayoutManager
     private val TAG = "MainFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,8 +177,10 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
 
 
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
-       mainActivity.navController.navigate(R.id.addNotesFragment)
-        notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
+        val bundle = Bundle()
+        bundle.putString("notesId",notesDataClass.id)
+       findNavController().navigate(R.id.addNotesFragment,bundle)
+
 
     }
 
