@@ -2,6 +2,9 @@ package com.shruti.notealways
 
 import android.app.DatePickerDialog
 import android.content.ContentValues
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.icu.text.SimpleDateFormat
 import android.icu.text.Transliterator
 import android.os.Bundle
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -107,7 +111,6 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
             setContentView(dialogBinding.root)
             show()
         }
-
         dialogBinding.btnNoteClick.setOnClickListener {
             bottomSheet.dismiss()
             mainActivity.navController.navigate(R.id.addNotesFragment)
@@ -160,9 +163,9 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
     }
 
     fun delete(){
-        val simpleItemTouchCallback =  object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT
-                or ItemTouchHelper.RIGHT
-                or ItemTouchHelper.DOWN or ItemTouchHelper.UP){
+        val simpleItemTouchCallback =  object : ItemTouchHelper.SimpleCallback(0,
+                 ItemTouchHelper.LEFT
+                ){
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -172,24 +175,62 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                 return false
             }
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Toast.makeText(mainActivity,"on Swiped",Toast.LENGTH_SHORT).show()
-                firestore.collection("users").document(notesDataClass.id?:"")
-                    .delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(mainActivity,"Data delete",Toast.LENGTH_SHORT).show()
-                        getCollectionNote()
-                    }
-                    .addOnCanceledListener {
-                        Toast.makeText(mainActivity,"Data Cancel",Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener{
-                        Toast.makeText(mainActivity,"Data fail",Toast.LENGTH_SHORT).show()
-                    }
-                adapter.notifyDataSetChanged()
-            }
+                if (direction == ItemTouchHelper.LEFT) {
+                    val position = viewHolder.adapterPosition
+                    val itemToRemove = itemNote[position]
+                    val backup = itemToRemove
+                    firestore.collection("note").document(itemToRemove.id)
+                        .delete()
+                        .addOnSuccessListener {
+                            getCollectionNote()
+                            Snackbar.make(binding.root,"Item deleted",Snackbar.LENGTH_SHORT).setAction("undo")
+                            {
+                                firestore.collection("note").add(backup)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(mainActivity,"Data restored",Toast.LENGTH_SHORT).show()
+                                        getCollectionNote()
+                                    }
+                                    .addOnFailureListener{
+                                        execp ->
+                                        Toast.makeText(mainActivity,"Failed to delete item ${execp.message}",Toast.LENGTH_SHORT).show()
+                                    }
 
+                                    adapter.notifyDataSetChanged()
+                            }
+                        }
+                        .addOnCanceledListener {
+                            Toast.makeText(mainActivity, "Data Cancel", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(mainActivity, "Data fail", Toast.LENGTH_SHORT).show()
+                        }
+                    adapter.notifyDataSetChanged()
+                }
+                fun  onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                   val itemView = viewHolder.itemView
+                    val backGround = ColorDrawable(Color.RED)
+                    if(dX  > 0){
+                        backGround.setBounds(itemView.left,itemView.top,(itemView.left + dX).toInt(),itemView.bottom)
+                    }
+                    else{
+                        backGround.setBounds(itemView.left,itemView.top,(itemView.right + dX).toInt(),itemView.bottom)
+                    }
+                    backGround.draw(c)
+                    super.onChildDraw(c,recyclerView,viewHolder,dX,dY,actionState,isCurrentlyActive)
+                }
+            }
         }
-        
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(binding.recylerlist)
+
     }
 
     companion object {
@@ -217,8 +258,7 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         val bundle = Bundle()
         bundle.putString("notesId",notesDataClass.id)
        findNavController().navigate(R.id.addNotesFragment,bundle)
-
-
+        System.out.println(notesDataClass.id)
     }
 
     override fun notesClick(notesDataClass: NotesDataClass) {

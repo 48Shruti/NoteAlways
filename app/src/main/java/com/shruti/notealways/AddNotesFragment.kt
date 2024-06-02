@@ -64,16 +64,15 @@ class AddNotesFragment : Fragment(),NotesInterface {
         super.onViewCreated(view, savedInstanceState)
         adapter = NotesAdapter(item, this)
         binding.addnotesFragment = this
-
-            val item = firestore.collection("note").document(noteId)
-            item.get().addOnSuccessListener { data ->
+            var store = firestore.collection("note").document(noteId)
+            store.get().addOnSuccessListener { data ->
                 if (data != null) {
                     val title = data.getString("title")
                     val description = data.getString("description")
                     binding.ettitle.setText(title)
                     binding.etdescription.setText(description)
-                    binding.imgbuttondone.setOnClickListener{
-                        var updateNotes =
+                    binding.imgbuttondone.setOnClickListener {
+                        val updateNotes =
                             NotesDataClass(
                                 title = binding.ettitle.text.toString(),
                                 description = binding.etdescription.text.toString()
@@ -106,7 +105,9 @@ class AddNotesFragment : Fragment(),NotesInterface {
             }
                 .addOnFailureListener { exep ->
                     Log.e(TAG, "Error getting document", exep)
-        }
+                }
+
+
     }
 
 
