@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
 
 class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: NotesInterface): RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
     class ViewHolder (var view : View) : RecyclerView.ViewHolder(view) {
-        var title  = view.findViewById<TextView>(R.id.tvtitleview)
+        var title = view.findViewById<TextView>(R.id.tvtitleview)
         var description = view.findViewById<TextView>(R.id.tvdescriptionview)
         var date = view.findViewById<TextView>(R.id.tvdateview)
-       // var update = view.findViewById<ImageButton>(R.id.btnupdate)
-        //var delete = view.findViewById<ImageButton>(R.id.btndelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,12 +31,6 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
         holder.itemView.setOnClickListener{
             notesInterface.notesUpdate(item[position],position)
         }
-//        holder.update.setOnClickListener {
-//            notesInterface.notesUpdate(item[position],position)
-//        }
-//        holder.delete.setOnClickListener{
-//            notesInterface.notesDelete(item[position],position)
-//        }
     }
 
 

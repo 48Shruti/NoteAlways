@@ -1,6 +1,7 @@
 package com.shruti.notealways
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.icu.text.Transliterator
 import android.os.Bundle
 import android.util.Log
@@ -55,7 +56,7 @@ private const val ARG_PARAM2 = "param2"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TodoAdapter(item,this)
+        adapter = TodoAdapter(item, this)
         binding.recycler.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayout
@@ -106,7 +107,16 @@ private const val ARG_PARAM2 = "param2"
     }
 
     override fun todoMark(todoDataClass: TodoDataClass, position: Int) {
-
+        item.clear()
+        firestore.collection("todo").document(todoDataClass.id ?: "")
+            .update(mapOf("completed" to todoDataClass.completed))
+            .addOnSuccessListener {
+                Toast.makeText(mainActivity,"todo successfully",Toast.LENGTH_SHORT).show()
+                adapter.notifyItemChanged(position)
+            }
+            .addOnFailureListener {e->
+                Log.w(TAG,"Error occured",e)
+            }
     }
 
 

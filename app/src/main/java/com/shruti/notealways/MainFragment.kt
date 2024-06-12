@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.icu.text.SimpleDateFormat
 import android.icu.text.Transliterator
 import android.os.Bundle
@@ -12,6 +11,9 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -42,13 +44,13 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MainFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment(),NotesInterface, TodoInterface {
+class MainFragment : Fragment(),NotesInterface {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     lateinit var binding : FragmentMainBinding
     lateinit var mainActivity: MainActivity
-    lateinit var notesDataClass: NotesDataClass
+     var notesDataClass: NotesDataClass ?= null
     lateinit var adapter: NotesAdapter
     val firestore = FirebaseFirestore.getInstance()
     var itemNote  = arrayListOf<NotesDataClass>()
@@ -81,14 +83,13 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recylerlist.layoutManager = linearLayout
         getCollectionNote()
-        getCollectionTodo()
         delete()
         binding.btntodo.setOnClickListener{
             mainActivity.navController.navigate(R.id.todoFragment)
         }
-
-
-
+        binding.btnbookmark.setOnClickListener {
+            mainActivity.navController.navigate(R.id.bookmarkFragment)
+        }
     }
     private fun getCollectionNote(){
         itemNote.clear()
@@ -147,7 +148,6 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
                     )
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added",Toast.LENGTH_SHORT).show()
-                                getCollectionTodo()
                         }
                         .addOnFailureListener {
                             Toast.makeText(mainActivity, "Data failure",Toast.LENGTH_SHORT).show()
@@ -162,76 +162,99 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         }
     }
 
-    fun delete(){
-        val simpleItemTouchCallback =  object : ItemTouchHelper.SimpleCallback(0,
-                 ItemTouchHelper.LEFT
-                ){
+
+
+    fun delete() {
+        itemNote.clear()
+        val deleteIcon: Drawable? = ContextCompat.getDrawable(mainActivity, R.drawable.icon_delete)
+        val intrinsicWidth = deleteIcon?.intrinsicWidth
+        val intrinsicHeight = deleteIcon?.intrinsicHeight
+        val background = ColorDrawable()
+        val backgroundColor = Color.parseColor("#f44336") // Red background
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                Toast.makeText(mainActivity,"on move",Toast.LENGTH_SHORT).show()
+                Toast.makeText(mainActivity, "on move", Toast.LENGTH_SHORT).show()
                 return false
             }
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (direction == ItemTouchHelper.LEFT) {
                     val position = viewHolder.adapterPosition
                     val itemToRemove = itemNote[position]
                     val backup = itemToRemove
+                    itemNote.clear()
                     firestore.collection("note").document(itemToRemove.id)
                         .delete()
                         .addOnSuccessListener {
-                            getCollectionNote()
-                            Snackbar.make(binding.root,"Item deleted",Snackbar.LENGTH_SHORT).setAction("undo")
-                            {
-                                firestore.collection("note").add(backup)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(mainActivity,"Data restored",Toast.LENGTH_SHORT).show()
-                                        getCollectionNote()
-                                    }
-                                    .addOnFailureListener{
-                                        execp ->
-                                        Toast.makeText(mainActivity,"Failed to delete item ${execp.message}",Toast.LENGTH_SHORT).show()
-                                    }
-
-                                    adapter.notifyDataSetChanged()
-                            }
+                            adapter.notifyItemRemoved(position)
+                            Snackbar.make(binding.root, "Item deleted", Snackbar.LENGTH_LONG)
+                                .setAction("Undo") {
+                                    firestore.collection("note").add(backup)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(mainActivity, "Data restored", Toast.LENGTH_SHORT).show()
+                                            getCollectionNote()
+                                        }
+                                        .addOnFailureListener { execp ->
+                                            Toast.makeText(mainActivity, "Failed to restore item: ${execp.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }.show()
                         }
                         .addOnCanceledListener {
                             Toast.makeText(mainActivity, "Data Cancel", Toast.LENGTH_SHORT).show()
+                            adapter.notifyItemChanged(position) // Restore item in the adapter
                         }
                         .addOnFailureListener {
                             Toast.makeText(mainActivity, "Data fail", Toast.LENGTH_SHORT).show()
+                            adapter.notifyItemChanged(position) // Restore item in the adapter
                         }
-                    adapter.notifyDataSetChanged()
-                }
-                fun  onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-                ) {
-                   val itemView = viewHolder.itemView
-                    val backGround = ColorDrawable(Color.RED)
-                    if(dX  > 0){
-                        backGround.setBounds(itemView.left,itemView.top,(itemView.left + dX).toInt(),itemView.bottom)
-                    }
-                    else{
-                        backGround.setBounds(itemView.left,itemView.top,(itemView.right + dX).toInt(),itemView.bottom)
-                    }
-                    backGround.draw(c)
-                    super.onChildDraw(c,recyclerView,viewHolder,dX,dY,actionState,isCurrentlyActive)
                 }
             }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val itemHeight = itemView.bottom - itemView.top
+
+                // Draw the red delete background
+                background.color = backgroundColor
+                background.setBounds(
+                    itemView.right + dX.toInt(),
+                    itemView.top,
+                    itemView.right,
+                    itemView.bottom
+                )
+                background.draw(c)
+
+                // Calculate position of delete icon
+                val iconTop = itemView.top + (itemHeight - intrinsicHeight!!) / 2
+                val iconMargin = (itemHeight - intrinsicHeight) / 2
+                val iconLeft = itemView.right - iconMargin - intrinsicWidth!!
+                val iconRight = itemView.right - iconMargin
+                val iconBottom = iconTop + intrinsicHeight
+
+                // Draw the delete icon
+                deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                deleteIcon.draw(c)
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
         }
+
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recylerlist)
-
     }
+
 
     companion object {
         /**
@@ -261,44 +284,14 @@ class MainFragment : Fragment(),NotesInterface, TodoInterface {
         System.out.println(notesDataClass.id)
     }
 
-    override fun notesClick(notesDataClass: NotesDataClass) {
 
-//        getCollectionNote()
-
-    }
-
-    override fun notesId(notesDataClass: NotesDataClass, id: Int) {
-        TODO("Not yet implemented")
-    }
 
     override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
         TODO("Not yet implemented")
     }
 
-
-
-    override fun delete(todoDataClass: TodoDataClass, position: Int) {
+    override fun bookmark(notesDataClass: NotesDataClass, position: Int) {
         TODO("Not yet implemented")
-    }
-
-    override fun getCollectionTodo() {
-        itemTodo.clear()
-        firestore.collection("todo").addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(ContentValues.TAG, "Listen failed", e)
-                return@addSnapshotListener
-            }
-            for (dc in snapshot!!) {
-                val firestoreClass = dc.toObject(TodoDataClass::class.java)
-                firestoreClass.id = dc.id
-                itemTodo.add(firestoreClass)
-            }
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun todoMark(todoDataClass: TodoDataClass, position: Int) {
-
     }
 
 

@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 
 data class TodoDataClass(var title : String ?= "",
-                         var id :String ?= "",
+    var id :String ?= "",
     var time : String ?= "",
-    var isChecked : Boolean ?= true)
+    var completed: Boolean = false,
+    var visibility : Boolean = true)

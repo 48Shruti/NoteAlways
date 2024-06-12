@@ -1,12 +1,15 @@
 package com.shruti.notealways
 
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.opengl.Visibility
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.google.firebase.ktx.Firebase
@@ -29,17 +32,29 @@ class TodoAdapter(val item : ArrayList<TodoDataClass>,val todoInterface: TodoInt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.setText(item[position].title)
-        holder.time.setText(item[position].time)
+        holder.title.text = item[position].title
+        holder.time.text =  item[position].time
+        holder.checkbox.isChecked =  item[position].completed
+        if (item[position].completed){
+            holder.title.setTextColor(Color.GRAY)
+            holder.time.text = "Completed"
+        }
+        else{
+            holder.title.setTextColor(Color.BLACK)
+            holder.time.text =  item[position].time
+        }
         holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
-                holder.title.setTextColor(Color.argb(128,128,128,128))
-                holder.time.setText("Completed")
-                holder.checkbox.visibility = View.GONE
-            }
-            else{
-                holder.checkbox.visibility = View.VISIBLE
-            }
+        if (isChecked) {
+            item[position].completed = true
+            holder.title.setTextColor(Color.GRAY)
+            holder.time.text = "Completed"
+            todoInterface.todoMark( item[position],position)
+        } else {
+            item[position].completed = false
+            holder.title.setTextColor(Color.BLACK)
+            holder.time.text =  item[position].time
+            todoInterface.todoMark( item[position],position)
         }
     }
 }
+    }

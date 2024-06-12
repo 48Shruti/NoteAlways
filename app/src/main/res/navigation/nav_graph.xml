@@ -28,10 +28,19 @@
         android:id="@+id/addNotesFragment"
         android:name="com.shruti.notealways.AddNotesFragment"
         tools:layout="@layout/fragment_add_notes"
-        android:label="AddNotesFragment" />
+        android:label="AddNotesFragment" >
+        <action
+            android:id="@+id/action_addNotesFragment_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
     <fragment
         android:id="@+id/todoFragment"
         android:name="com.shruti.notealways.TodoFragment"
         android:label="fragment_todo"
         tools:layout="@layout/fragment_todo" />
+    <fragment
+        android:id="@+id/bookmarkFragment"
+        android:name="com.shruti.notealways.BookmarkFragment"
+        android:label="fragment_bookmark"
+        tools:layout="@layout/fragment_bookmark" />
 </navigation>

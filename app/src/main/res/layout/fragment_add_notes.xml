@@ -45,14 +45,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title"
-            android:textSize="@dimen/size_25sp"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_20dp"
             android:id="@+id/ettitle"
             android:background="@android:color/transparent"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/description"
-            android:textSize="@dimen/size_25sp"
+            android:textSize="@dimen/size_15dp"
+            android:layout_marginTop="@dimen/size_5dp"
             android:gravity="top|start"
             android:id="@+id/etdescription"
             android:background="@android:color/transparent" />
