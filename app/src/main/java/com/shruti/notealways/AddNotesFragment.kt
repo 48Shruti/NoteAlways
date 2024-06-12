@@ -101,17 +101,26 @@ private const val ARG_PARAM2 = "param2"
                 }
 
         }
+
+        binding.imgbuttonbookmark.setOnClickListener {
+            BookmarkClick()
+        }
+        binding.imgbuttondone.setOnClickListener {
+            navigateToBookmarkFragment()
+        }
     }
 
 
     fun BookmarkClick(){
-        val bundle = Bundle()
-        bundle.putString("bookmarkId",notesDataClass?.id)
-        findNavController().navigate(R.id.addNotesFragment,bundle)
-        Toast.makeText(mainActivity,"Bookmark saved " , Toast.LENGTH_SHORT).show()
         binding.imgbuttonbookmark.setImageResource(R.drawable.baseline_bookmark_added_24)
+        Toast.makeText(requireContext(), "Bookmark saved", Toast.LENGTH_SHORT).show()
+    }
 
-
+    private fun navigateToBookmarkFragment() {
+        val bundle = Bundle().apply {
+            putString("bookmarkId", notesDataClass?.id)
+        }
+        findNavController().navigate(R.id.action_addNotesFragment_to_bookmarkFragment, bundle)
     }
 
     fun NotesClick(){

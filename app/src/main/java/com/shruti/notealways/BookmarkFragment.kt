@@ -42,7 +42,7 @@ class BookmarkFragment : Fragment(), NotesInterface {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
             bookmarkId = it.getString("bookmarkId", "")
-            Log.w(TAG, "bookmark id: $bookmarkId")
+            Log.d(TAG, "bookmark id: $bookmarkId")
         }
     }
 
@@ -61,36 +61,39 @@ class BookmarkFragment : Fragment(), NotesInterface {
         linearLayoutManager = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayoutManager
         if (bookmarkId.isNotEmpty()) {
-            firestore.collection("bookmark").document(bookmarkId)
-                .get()
-                .addOnSuccessListener { data ->
-                    if (data != null && data.exists()) {
-                        val note = data.toObject<NotesDataClass>()
-                        note?.let {
-                            item.clear()
-                            item.add(it)
-                            adapter.notifyDataSetChanged()
-                        }
-                    } else {
-                        Toast.makeText(mainActivity, "No such bookmark", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "Error getting document", e)
-                    Toast.makeText(mainActivity, "Error getting document", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(mainActivity, "Bookmark ID is empty", Toast.LENGTH_SHORT).show()
+            getBookmarkedNote()
         }
     }
 
-    private fun fetchBookmark() {
-
+    private fun getBookmarkedNote() {
+        item.clear()
+        firestore.collection("note").document(bookmarkId)
+            .get()
+            .addOnSuccessListener {
+                Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT)
+                    .show()
+                getCollectionBookmark()
+            }
+            .addOnCanceledListener {
+                Toast.makeText(
+                    mainActivity,
+                    "Data  update cancel",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    mainActivity,
+                    "Data update failure",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        adapter.notifyDataSetChanged()
     }
 
     fun getCollectionBookmark() {
         item.clear()
-        firestore.collection("bookmarks")
+        firestore.collection("note")
             .get()
             .addOnSuccessListener { snapshot ->
                 if (snapshot != null) {
