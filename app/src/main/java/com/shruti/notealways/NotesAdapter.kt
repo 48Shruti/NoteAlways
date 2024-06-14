@@ -34,5 +34,5 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
     }
 
 
-    
+
 }

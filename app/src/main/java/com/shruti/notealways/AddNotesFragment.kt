@@ -64,36 +64,7 @@ private const val ARG_PARAM2 = "param2"
                         val description = data.getString("description")
                         binding.ettitle.setText(title)
                         binding.etdescription.setText(description)
-                        binding.imgbuttondone.setOnClickListener {
-                            val updateNotes =
-                                NotesDataClass(
-                                    title = binding.ettitle.text.toString(),
-                                    description = binding.etdescription.text.toString()
-                                )
-                            firestore.collection("note").document(noteId)
-                                .set(updateNotes)
-                                .addOnSuccessListener {
-                                    Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT)
-                                        .show()
-                                    getCollectionNote()
-                                }
-                                .addOnCanceledListener {
-                                    Toast.makeText(
-                                        mainActivity,
-                                        "Data  update cancel",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(
-                                        mainActivity,
-                                        "Data update failure",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            adapter.notifyDataSetChanged()
-                            findNavController().navigate(R.id.mainFragment)
-                        }
+                        NotesClick()
                     }
                 }
                 .addOnFailureListener { exep ->
@@ -105,9 +76,9 @@ private const val ARG_PARAM2 = "param2"
         binding.imgbuttonbookmark.setOnClickListener {
             BookmarkClick()
         }
-        binding.imgbuttondone.setOnClickListener {
-            navigateToBookmarkFragment()
-        }
+//        binding.imgbuttondone.setOnClickListener {
+//            navigateToBookmarkFragment()
+//        }
     }
 
 
@@ -124,13 +95,34 @@ private const val ARG_PARAM2 = "param2"
     }
 
     fun NotesClick(){
-        if(binding.ettitle.text.isNullOrEmpty()){
-            binding.ettitle.error = "Enter title"
-        }
-        else if(binding.etdescription.text.isNullOrEmpty()){
-            binding.etdescription.error = "Enter description"
+        if (noteId.isNotEmpty()) {
+            var updateNotes =
+                NotesDataClass(
+                    title = binding.ettitle.text.toString(),
+                    description = binding.etdescription.text.toString()
+                )
+            firestore.collection("note").document(noteId)
+                .set(updateNotes)
+                .addOnSuccessListener {
+                    Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT).show()
+                    getCollectionNote()
+                }
+                .addOnCanceledListener {
+                    Toast.makeText(mainActivity, "Data  update cancel", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(mainActivity,"Data update failure", Toast.LENGTH_SHORT).show()
+                }
+            adapter.notifyDataSetChanged()
+            findNavController().navigate(R.id.mainFragment)
+
         }
         else {
+            if (binding.ettitle.text.isNullOrEmpty()) {
+                binding.ettitle.error = "Enter title"
+            } else if (binding.etdescription.text.isNullOrEmpty()) {
+                binding.etdescription.error = "Enter description"
+            } else {
                 firestore.collection("note").add(
                     NotesDataClass(
                         title = binding.ettitle.text.toString(),
@@ -150,6 +142,7 @@ private const val ARG_PARAM2 = "param2"
                 adapter.notifyDataSetChanged()
                 mainActivity.navController.navigate(R.id.mainFragment)
             }
+        }
     }
     fun getCollectionNote(){
         item.clear()

@@ -60,36 +60,36 @@ class BookmarkFragment : Fragment(), NotesInterface {
         binding.recycler.adapter = adapter
         linearLayoutManager = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayoutManager
-        if (bookmarkId.isNotEmpty()) {
-            getBookmarkedNote()
-        }
+//        if (bookmarkId.isNotEmpty()) {
+//            getBookmarkedNote()
+//        }
     }
 
-    private fun getBookmarkedNote() {
-        item.clear()
-        firestore.collection("note").document(bookmarkId)
-            .get()
-            .addOnSuccessListener {
-                Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT)
-                    .show()
-                getCollectionBookmark()
-            }
-            .addOnCanceledListener {
-                Toast.makeText(
-                    mainActivity,
-                    "Data  update cancel",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(
-                    mainActivity,
-                    "Data update failure",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        adapter.notifyDataSetChanged()
-    }
+//    private fun getBookmarkedNote() {
+//       item.clear()
+//        firestore.collection("note").whereEqualTo(bookmarkId.i)
+//            .get()
+//            .addOnSuccessListener {
+//                Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT)
+//                    .show()
+//                getCollectionBookmark()
+//            }
+//            .addOnCanceledListener {
+//                Toast.makeText(
+//                    mainActivity,
+//                    "Data  update cancel",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//            .addOnFailureListener {
+//                Toast.makeText(
+//                    mainActivity,
+//                    "Data update failure",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//        adapter.notifyDataSetChanged()
+//    }
 
     fun getCollectionBookmark() {
         item.clear()
