@@ -186,7 +186,7 @@ class MainFragment : Fragment(),NotesInterface {
                     val position = viewHolder.adapterPosition
                     val itemToRemove = itemNote[position]
                     val backup = itemToRemove
-                    itemNote.clear()
+
                     firestore.collection("note").document(itemToRemove.id)
                         .delete()
                         .addOnSuccessListener {
@@ -246,7 +246,6 @@ class MainFragment : Fragment(),NotesInterface {
                 // Draw the delete icon
                 deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 deleteIcon.draw(c)
-
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }
@@ -276,23 +275,9 @@ class MainFragment : Fragment(),NotesInterface {
             }
     }
 
-
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
         val bundle = Bundle()
         bundle.putString("notesId",notesDataClass.id)
-       findNavController().navigate(R.id.addNotesFragment,bundle)
-        System.out.println(notesDataClass.id)
+        findNavController().navigate(R.id.addNotesFragment,bundle)
     }
-
-
-
-    override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun bookmark(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
-    }
-
-
 }

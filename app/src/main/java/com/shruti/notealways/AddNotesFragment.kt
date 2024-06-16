@@ -27,12 +27,13 @@ private const val ARG_PARAM2 = "param2"
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var binding : FragmentAddNotesBinding
-    var firestore =  FirebaseFirestore.getInstance()
+    lateinit var binding: FragmentAddNotesBinding
+    var firestore = FirebaseFirestore.getInstance()
     lateinit var adapter: NotesAdapter
-     lateinit var  mainActivity : MainActivity
-     var notesDataClass: NotesDataClass ?= null
-     var item = arrayListOf<NotesDataClass>()
+    lateinit var mainActivity: MainActivity
+    var notesDataClass: NotesDataClass? = null
+    var item = arrayListOf<NotesDataClass>()
+    var isBookmarked  = false
     var noteId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,53 +57,64 @@ private const val ARG_PARAM2 = "param2"
         super.onViewCreated(view, savedInstanceState)
         adapter = NotesAdapter(item, this)
         binding.addnotesFragment = this
-        if(noteId.isNotEmpty()) {
-            firestore.collection("note").document(noteId)
-                .get().addOnSuccessListener { data ->
-                    if (data != null) {
-                        val title = data.getString("title")
-                        val description = data.getString("description")
-                        binding.ettitle.setText(title)
-                        binding.etdescription.setText(description)
-                        NotesClick()
-                    }
-                }
-                .addOnFailureListener { exep ->
-                    Log.e(TAG, "Error getting document", exep)
-                }
-
+        binding.imgbuttondone.setOnClickListener {
+                onDoneClick()
         }
-
         binding.imgbuttonbookmark.setOnClickListener {
-            BookmarkClick()
+            bookMarkNote()
         }
-//        binding.imgbuttondone.setOnClickListener {
-//            navigateToBookmarkFragment()
-//        }
-    }
-
-
-    fun BookmarkClick(){
-        binding.imgbuttonbookmark.setImageResource(R.drawable.baseline_bookmark_added_24)
-        Toast.makeText(requireContext(), "Bookmark saved", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun navigateToBookmarkFragment() {
-        val bundle = Bundle().apply {
-            putString("bookmarkId", notesDataClass?.id)
+        if(noteId.isNotEmpty()){
+                firestore.collection("note").document(noteId)
+                    .get().addOnSuccessListener { data ->
+                        if (data != null) {
+                            val title = data.getString("title")
+                            val description = data.getString("description")
+                            binding.ettitle.setText(title)
+                            binding.etdescription.setText(description)
+                            isBookmarked = data.getBoolean("isBookmarked") ?: false
+                            onUpdateBookmark()
+                        }
+                    }
+                    .addOnFailureListener { exep ->
+                        Log.e(TAG,"Error getting document",exep)
+                    }
         }
-        findNavController().navigate(R.id.action_addNotesFragment_to_bookmarkFragment, bundle)
     }
 
-    fun NotesClick(){
+
+
+
+    private fun bookMarkNote() {
+            isBookmarked = !isBookmarked
+            updateBookmarkStatus()
+    }
+
+    private fun onUpdateBookmark(){
+        if (isBookmarked) {
+            binding.imgbuttonbookmark.setImageResource(R.drawable.baseline_bookmark_added_24)
+      }else{
+            binding.imgbuttonbookmark.setImageResource(R.drawable.baseline_bookmark_border_24)
+        }
+    }
+
+    private fun updateBookmarkStatus(){
+        firestore.collection("note").document(noteId)
+            .update("isBookmarked",isBookmarked)
+            .addOnSuccessListener {
+                onUpdateBookmark()
+                Toast.makeText(mainActivity,"Bookmark updated",Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(mainActivity,"Bookmark not updated",Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun onDoneClick() {
+        val title = binding.ettitle.text.toString()
+        val description = binding.etdescription.text.toString()
         if (noteId.isNotEmpty()) {
-            var updateNotes =
-                NotesDataClass(
-                    title = binding.ettitle.text.toString(),
-                    description = binding.etdescription.text.toString()
-                )
             firestore.collection("note").document(noteId)
-                .set(updateNotes)
+                .update(mapOf("title" to title, "description" to description))
                 .addOnSuccessListener {
                     Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT).show()
                     getCollectionNote()
@@ -111,44 +123,34 @@ private const val ARG_PARAM2 = "param2"
                     Toast.makeText(mainActivity, "Data  update cancel", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(mainActivity,"Data update failure", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mainActivity, "Data update failure", Toast.LENGTH_SHORT).show()
                 }
             adapter.notifyDataSetChanged()
             findNavController().navigate(R.id.mainFragment)
-
         }
-        else {
-            if (binding.ettitle.text.isNullOrEmpty()) {
-                binding.ettitle.error = "Enter title"
-            } else if (binding.etdescription.text.isNullOrEmpty()) {
-                binding.etdescription.error = "Enter description"
-            } else {
-                firestore.collection("note").add(
-                    NotesDataClass(
-                        title = binding.ettitle.text.toString(),
-                        description = binding.etdescription.text.toString()
-                    )
-                )
-                    .addOnSuccessListener {
-                        Toast.makeText(mainActivity, "Data Added", Toast.LENGTH_SHORT).show()
-                        getCollectionNote()
-                    }
-                    .addOnCanceledListener {
-                        Toast.makeText(mainActivity, "Data cancel", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(mainActivity, "Data failure", Toast.LENGTH_SHORT).show()
-                    }
-                adapter.notifyDataSetChanged()
-                mainActivity.navController.navigate(R.id.mainFragment)
-            }
+        else{
+            firestore.collection("note").add(
+                       mapOf("title" to title ,"description" to description))
+                        .addOnSuccessListener {
+                            Toast.makeText(mainActivity, "Data Added", Toast.LENGTH_SHORT).show()
+                            getCollectionNote()
+                        }
+                        .addOnCanceledListener {
+                            Toast.makeText(mainActivity, "Data cancel", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(mainActivity, "Data failure", Toast.LENGTH_SHORT).show()
+                        }
+                    adapter.notifyDataSetChanged()
+                    findNavController().navigate(R.id.mainFragment)
         }
     }
-    fun getCollectionNote(){
+
+    private fun getCollectionNote() {
         item.clear()
         firestore.collection("note").addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(ContentValues.TAG, "Listen failed", e)
+                Log.w(TAG, "Listen failed", e)
                 return@addSnapshotListener
             }
             for (dc in snapshot!!) {
@@ -181,18 +183,12 @@ private const val ARG_PARAM2 = "param2"
     }
 
 
+
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
     }
 
 
-
-    override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun bookmark(notesDataClass: NotesDataClass, position: Int) {
-        TODO("Not yet implemented")
-    }
-
-
 }
+
+
+

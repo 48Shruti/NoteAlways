@@ -29,7 +29,6 @@
                 android:src="@drawable/baseline_bookmark_border_24"
                 android:layout_marginRight="@dimen/size_15dp"
                 android:id="@+id/imgbuttonbookmark"
-                android:onClick="@{()->addnotesFragment.BookmarkClick()}"
                 android:backgroundTint="@color/white"
                 android:padding="@dimen/size_15dp"/>
             <ImageButton
@@ -38,8 +37,7 @@
                 android:src="@drawable/icon_done"
                 android:id="@+id/imgbuttondone"
                 android:backgroundTint="@color/white"
-                android:padding="@dimen/size_15dp"
-                android:onClick="@{()->addnotesFragment.NotesClick()}"/>
+                android:padding="@dimen/size_15dp"/>
         </LinearLayout>
         <EditText
             android:layout_width="match_parent"

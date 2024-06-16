@@ -60,40 +60,12 @@ class BookmarkFragment : Fragment(), NotesInterface {
         binding.recycler.adapter = adapter
         linearLayoutManager = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayoutManager
-//        if (bookmarkId.isNotEmpty()) {
-//            getBookmarkedNote()
-//        }
+        getCollectionBookmark()
     }
-
-//    private fun getBookmarkedNote() {
-//       item.clear()
-//        firestore.collection("note").whereEqualTo(bookmarkId.i)
-//            .get()
-//            .addOnSuccessListener {
-//                Toast.makeText(mainActivity, "Data update", Toast.LENGTH_SHORT)
-//                    .show()
-//                getCollectionBookmark()
-//            }
-//            .addOnCanceledListener {
-//                Toast.makeText(
-//                    mainActivity,
-//                    "Data  update cancel",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//            .addOnFailureListener {
-//                Toast.makeText(
-//                    mainActivity,
-//                    "Data update failure",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        adapter.notifyDataSetChanged()
-//    }
 
     fun getCollectionBookmark() {
         item.clear()
-        firestore.collection("note")
+        firestore.collection("note").whereEqualTo("isBookmarked", true)
             .get()
             .addOnSuccessListener { snapshot ->
                 if (snapshot != null) {
@@ -127,12 +99,6 @@ class BookmarkFragment : Fragment(), NotesInterface {
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
         // Not implemented yet
     }
-
-    override fun notesDelete(notesDataClass: NotesDataClass, position: Int) {
-        // Not implemented yet
-    }
-
-    override fun bookmark(notesDataClass: NotesDataClass, position: Int) {
-        // Not implemented yet
-    }
 }
+
+

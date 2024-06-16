@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.TodoLayoutViewBinding
 
-class TodoAdapter(val item : ArrayList<TodoDataClass>,val todoInterface: TodoInterface) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
+class TodoAdapter(var item : ArrayList<TodoDataClass>, var todoInterface: TodoInterface) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
     class ViewHolder(val view : View):RecyclerView.ViewHolder(view) {
         var title = view.findViewById<TextView>(R.id.titletodo)
         var time = view.findViewById<TextView>(R.id.datetodo)
@@ -36,10 +36,12 @@ class TodoAdapter(val item : ArrayList<TodoDataClass>,val todoInterface: TodoInt
         holder.time.text =  item[position].time
         holder.checkbox.isChecked =  item[position].completed
         if (item[position].completed){
+            item[position].completed = true
             holder.title.setTextColor(Color.GRAY)
             holder.time.text = "Completed"
         }
         else{
+            item[position].completed = false
             holder.title.setTextColor(Color.BLACK)
             holder.time.text =  item[position].time
         }
@@ -48,13 +50,14 @@ class TodoAdapter(val item : ArrayList<TodoDataClass>,val todoInterface: TodoInt
             item[position].completed = true
             holder.title.setTextColor(Color.GRAY)
             holder.time.text = "Completed"
-            todoInterface.todoMark( item[position],position)
+
         } else {
             item[position].completed = false
             holder.title.setTextColor(Color.BLACK)
             holder.time.text =  item[position].time
-            todoInterface.todoMark( item[position],position)
         }
+            todoInterface.todoMark( item[position],position)
     }
 }
+
     }

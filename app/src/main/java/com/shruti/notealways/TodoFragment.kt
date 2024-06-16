@@ -111,6 +111,7 @@ private const val ARG_PARAM2 = "param2"
         firestore.collection("todo").document(todoDataClass.id ?: "")
             .update(mapOf("completed" to todoDataClass.completed))
             .addOnSuccessListener {
+                getCollectionTodo()
                 Toast.makeText(mainActivity,"todo successfully",Toast.LENGTH_SHORT).show()
                 adapter.notifyItemChanged(position)
             }

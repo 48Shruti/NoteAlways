@@ -6,5 +6,4 @@ import android.icu.util.Calendar
 data class TodoDataClass(var title : String ?= "",
     var id :String ?= "",
     var time : String ?= "",
-    var completed: Boolean = false,
-    var visibility : Boolean = true)
+    var completed: Boolean = false)
