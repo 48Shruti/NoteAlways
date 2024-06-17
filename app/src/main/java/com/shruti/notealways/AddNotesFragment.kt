@@ -130,7 +130,7 @@ private const val ARG_PARAM2 = "param2"
         }
         else{
             firestore.collection("note").add(
-                       mapOf("title" to title ,"description" to description))
+                       mapOf("title" to title ,"description" to description , "isBookmarked" to false))
                         .addOnSuccessListener {
                             Toast.makeText(mainActivity, "Data Added", Toast.LENGTH_SHORT).show()
                             getCollectionNote()

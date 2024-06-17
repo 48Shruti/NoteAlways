@@ -56,7 +56,7 @@ class MainFragment : Fragment(),NotesInterface {
     var itemNote  = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
     lateinit var linearLayout : LinearLayoutManager
-    private val TAG = "MainFragment"
+    val TAG = "MainFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
@@ -95,7 +95,7 @@ class MainFragment : Fragment(),NotesInterface {
         itemNote.clear()
         firestore.collection("note").addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(ContentValues.TAG, "Listen failed", e)
+                Log.w(TAG, "Listen failed", e)
                 return@addSnapshotListener
             }
             for (dc in snapshot!!) {
@@ -165,7 +165,6 @@ class MainFragment : Fragment(),NotesInterface {
 
 
     fun delete() {
-        itemNote.clear()
         val deleteIcon: Drawable? = ContextCompat.getDrawable(mainActivity, R.drawable.icon_delete)
         val intrinsicWidth = deleteIcon?.intrinsicWidth
         val intrinsicHeight = deleteIcon?.intrinsicHeight
@@ -186,30 +185,29 @@ class MainFragment : Fragment(),NotesInterface {
                     val position = viewHolder.adapterPosition
                     val itemToRemove = itemNote[position]
                     val backup = itemToRemove
+                    itemNote.removeAt(position)
+                    adapter.notifyItemRemoved(position)
 
                     firestore.collection("note").document(itemToRemove.id)
                         .delete()
                         .addOnSuccessListener {
-                            adapter.notifyItemRemoved(position)
                             Snackbar.make(binding.root, "Item deleted", Snackbar.LENGTH_LONG)
                                 .setAction("Undo") {
                                     firestore.collection("note").add(backup)
                                         .addOnSuccessListener {
+                                            itemNote.add(position, backup)
+                                            adapter.notifyItemInserted(position)
                                             Toast.makeText(mainActivity, "Data restored", Toast.LENGTH_SHORT).show()
-                                            getCollectionNote()
                                         }
                                         .addOnFailureListener { execp ->
                                             Toast.makeText(mainActivity, "Failed to restore item: ${execp.message}", Toast.LENGTH_SHORT).show()
                                         }
                                 }.show()
                         }
-                        .addOnCanceledListener {
-                            Toast.makeText(mainActivity, "Data Cancel", Toast.LENGTH_SHORT).show()
-                            adapter.notifyItemChanged(position) // Restore item in the adapter
-                        }
                         .addOnFailureListener {
                             Toast.makeText(mainActivity, "Data fail", Toast.LENGTH_SHORT).show()
-                            adapter.notifyItemChanged(position) // Restore item in the adapter
+                            itemNote.add(position, itemToRemove)
+                            adapter.notifyItemInserted(position)
                         }
                 }
             }
@@ -226,7 +224,6 @@ class MainFragment : Fragment(),NotesInterface {
                 val itemView = viewHolder.itemView
                 val itemHeight = itemView.bottom - itemView.top
 
-                // Draw the red delete background
                 background.color = backgroundColor
                 background.setBounds(
                     itemView.right + dX.toInt(),
@@ -236,14 +233,12 @@ class MainFragment : Fragment(),NotesInterface {
                 )
                 background.draw(c)
 
-                // Calculate position of delete icon
                 val iconTop = itemView.top + (itemHeight - intrinsicHeight!!) / 2
                 val iconMargin = (itemHeight - intrinsicHeight) / 2
                 val iconLeft = itemView.right - iconMargin - intrinsicWidth!!
                 val iconRight = itemView.right - iconMargin
                 val iconBottom = iconTop + intrinsicHeight
 
-                // Draw the delete icon
                 deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 deleteIcon.draw(c)
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -252,7 +247,9 @@ class MainFragment : Fragment(),NotesInterface {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recylerlist)
+        adapter.notifyDataSetChanged()
     }
+
 
 
     companion object {

@@ -27,16 +27,16 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TodoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
- class TodoFragment : Fragment() , TodoInterface{
-    // TODO: Rename and change types of parameters
+class TodoFragment : Fragment(), TodoInterface {
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var binding : FragmentTodoBinding
+    private lateinit var binding: FragmentTodoBinding
     lateinit var mainActivity: MainActivity
     lateinit var adapter: TodoAdapter
     var firestore = FirebaseFirestore.getInstance()
-    var item  = arrayListOf<TodoDataClass>()
-    lateinit var linearLayout : LinearLayoutManager
+    var item = arrayListOf<TodoDataClass>()
+    lateinit var linearLayout: LinearLayoutManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = activity as MainActivity
@@ -56,24 +56,14 @@ private const val ARG_PARAM2 = "param2"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TodoAdapter(item, this)
+        adapter = TodoAdapter(item,this)
         binding.recycler.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recycler.layoutManager = linearLayout
         getCollectionTodo()
     }
 
-
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TodoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             TodoFragment().apply {
@@ -84,17 +74,15 @@ private const val ARG_PARAM2 = "param2"
             }
     }
 
-
     override fun delete(todoDataClass: TodoDataClass, position: Int) {
-        TODO("Not yet implemented")
-        
+        // TODO: Implement this method
     }
 
     override fun getCollectionTodo() {
         item.clear()
         firestore.collection("todo").addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(ContentValues.TAG, "Listen failed", e)
+                Log.w(TAG, "Listen failed", e)
                 return@addSnapshotListener
             }
             for (dc in snapshot!!) {
@@ -111,14 +99,13 @@ private const val ARG_PARAM2 = "param2"
         firestore.collection("todo").document(todoDataClass.id ?: "")
             .update(mapOf("completed" to todoDataClass.completed))
             .addOnSuccessListener {
-                getCollectionTodo()
-                Toast.makeText(mainActivity,"todo successfully",Toast.LENGTH_SHORT).show()
+                item[position].completed = todoDataClass.completed
                 adapter.notifyItemChanged(position)
+                Toast.makeText(mainActivity, "Todo successfully updated", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {e->
-                Log.w(TAG,"Error occured",e)
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error occurred", e)
             }
     }
-
-
 }
+

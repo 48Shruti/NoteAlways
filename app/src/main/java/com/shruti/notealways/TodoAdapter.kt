@@ -15,49 +15,51 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.TodoLayoutViewBinding
 
-class TodoAdapter(var item : ArrayList<TodoDataClass>, var todoInterface: TodoInterface) : RecyclerView.Adapter<TodoAdapter.ViewHolder>(){
-    class ViewHolder(val view : View):RecyclerView.ViewHolder(view) {
-        var title = view.findViewById<TextView>(R.id.titletodo)
-        var time = view.findViewById<TextView>(R.id.datetodo)
-        var checkbox = view.findViewById<CheckBox>(R.id.checkboxtodo)
+class TodoAdapter(private var item: ArrayList<TodoDataClass>, private var todoInterface: TodoInterface) :
+    RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
+
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView = view.findViewById(R.id.titletodo)
+        val time: TextView = view.findViewById(R.id.datetodo)
+        val checkbox: CheckBox = view.findViewById(R.id.checkboxtodo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.todo_layout_view,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.todo_layout_view, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return  item.size
+        return item.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = item[position].title
-        holder.time.text =  item[position].time
-        holder.checkbox.isChecked =  item[position].completed
-        if (item[position].completed){
-            item[position].completed = true
+        val currentItem = item[position]
+        holder.title.text = currentItem.title
+        holder.time.text = currentItem.time
+        holder.checkbox.isChecked = currentItem.completed
+        if (currentItem.completed) {
             holder.title.setTextColor(Color.GRAY)
             holder.time.text = "Completed"
-        }
-        else{
-            item[position].completed = false
+        } else {
             holder.title.setTextColor(Color.BLACK)
-            holder.time.text =  item[position].time
+            holder.time.text = currentItem.time
         }
         holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
-        if (isChecked) {
-            item[position].completed = true
-            holder.title.setTextColor(Color.GRAY)
-            holder.time.text = "Completed"
+            currentItem.completed = isChecked
+            if (isChecked) {
+                holder.title.setTextColor(Color.GRAY)
+                holder.time.text = "Completed"
 
-        } else {
-            item[position].completed = false
-            holder.title.setTextColor(Color.BLACK)
-            holder.time.text =  item[position].time
+            } else {
+                holder.title.setTextColor(Color.BLACK)
+                holder.time.text = currentItem.time
+
+            }
+            todoInterface.todoMark(currentItem, position)
         }
-            todoInterface.todoMark( item[position],position)
     }
+
+
 }
 
-    }
