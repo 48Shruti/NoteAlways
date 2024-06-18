@@ -17,7 +17,6 @@ import com.shruti.notealways.databinding.TodoLayoutViewBinding
 
 class TodoAdapter(private var item: ArrayList<TodoDataClass>, private var todoInterface: TodoInterface) :
     RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
-
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.titletodo)
         val time: TextView = view.findViewById(R.id.datetodo)
@@ -54,7 +53,6 @@ class TodoAdapter(private var item: ArrayList<TodoDataClass>, private var todoIn
             } else {
                 holder.title.setTextColor(Color.BLACK)
                 holder.time.text = currentItem.time
-
             }
             todoInterface.todoMark(currentItem, position)
         }

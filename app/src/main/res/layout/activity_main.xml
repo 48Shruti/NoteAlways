@@ -11,6 +11,12 @@
         app:layout_constraintGuide_percent=".07"
         android:orientation="horizontal"
         android:id="@+id/guide_h_6"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent=".14"
+        android:orientation="horizontal"
+        android:id="@+id/guide_h_14"/>
     <TextView
         android:layout_width="0dp"
         android:layout_height="0dp"

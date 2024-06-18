@@ -16,8 +16,10 @@ import androidx.core.content.ContextCompat
 import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -31,8 +33,12 @@ import com.google.firebase.ktx.Firebase
 import com.shruti.notealways.databinding.BottomsheetTodoBinding
 import com.shruti.notealways.databinding.FragmentBottomsheetBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Locale
+import java.util.Locale.filter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +59,9 @@ class MainFragment : Fragment(),NotesInterface {
      var notesDataClass: NotesDataClass ?= null
     lateinit var adapter: NotesAdapter
     val firestore = FirebaseFirestore.getInstance()
+    lateinit var searchView: SearchView
     var itemNote  = arrayListOf<NotesDataClass>()
+    var itemNoteFiltered = arrayListOf<NotesDataClass>()
     var itemTodo  = arrayListOf<TodoDataClass>()
     lateinit var linearLayout : LinearLayoutManager
     val TAG = "MainFragment"
@@ -82,6 +90,8 @@ class MainFragment : Fragment(),NotesInterface {
         binding.recylerlist.adapter = adapter
         linearLayout = LinearLayoutManager(mainActivity)
         binding.recylerlist.layoutManager = linearLayout
+        searchView = view.findViewById(R.id.searchView)
+        setSearchView()
         getCollectionNote()
         delete()
         binding.btntodo.setOnClickListener{
@@ -91,6 +101,36 @@ class MainFragment : Fragment(),NotesInterface {
             mainActivity.navController.navigate(R.id.bookmarkFragment)
         }
     }
+    private fun setSearchView(){
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filter(newText)
+                return true
+            }
+        })
+    }
+
+    private fun filter(query: String?) {
+        val filterList = ArrayList<NotesDataClass>()
+      if (query != null){
+          for (i in itemNote){
+              if (i.title.lowercase(Locale.ROOT).contains(query)){
+                  filterList.add(i)
+              }
+          }
+          if (filterList.isEmpty()){
+              Toast.makeText(mainActivity,"No data found",Toast.LENGTH_SHORT).show()
+          }
+          else{
+              adapter.setFilteredList(filterList)
+          }
+      }
+    }
+
     private fun getCollectionNote(){
         itemNote.clear()
         firestore.collection("note").addSnapshotListener { snapshot, e ->
@@ -103,6 +143,8 @@ class MainFragment : Fragment(),NotesInterface {
                 firestoreClass.id = dc.id
                 itemNote.add(firestoreClass)
             }
+
+
             adapter.notifyDataSetChanged()
         }
     }
@@ -169,7 +211,7 @@ class MainFragment : Fragment(),NotesInterface {
         val intrinsicWidth = deleteIcon?.intrinsicWidth
         val intrinsicHeight = deleteIcon?.intrinsicHeight
         val background = ColorDrawable()
-        val backgroundColor = Color.parseColor("#f44336") // Red background
+        val backgroundColor = Color.parseColor("#f44336")
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -181,10 +223,12 @@ class MainFragment : Fragment(),NotesInterface {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
                 if (direction == ItemTouchHelper.LEFT) {
                     val position = viewHolder.adapterPosition
                     val itemToRemove = itemNote[position]
                     val backup = itemToRemove
+
                     itemNote.removeAt(position)
                     adapter.notifyItemRemoved(position)
 
@@ -247,7 +291,6 @@ class MainFragment : Fragment(),NotesInterface {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recylerlist)
-        adapter.notifyDataSetChanged()
     }
 
 

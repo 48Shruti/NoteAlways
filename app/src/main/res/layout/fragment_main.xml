@@ -64,6 +64,7 @@
                             app:layout_constraintBottom_toBottomOf="@id/guide_h_6"
                             android:layout_margin="@dimen/size_5dp"
                             android:iconifiedByDefault="false"
+                            android:id="@+id/searchView"
                             android:padding="@dimen/size_5dp"
                             android:queryHint="@string/search"/>
                         <GridLayout

@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 
-class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: NotesInterface): RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+class NotesAdapter(var item :ArrayList<NotesDataClass>, val notesInterface: NotesInterface): RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
     class ViewHolder (var view : View) : RecyclerView.ViewHolder(view) {
         var title = view.findViewById<TextView>(R.id.tvtitleview)
         var description = view.findViewById<TextView>(R.id.tvdescriptionview)
@@ -33,6 +33,10 @@ class NotesAdapter(val item :ArrayList<NotesDataClass>, val notesInterface: Note
         }
     }
 
+    fun setFilteredList(item: ArrayList<NotesDataClass>){
+        this.item = item
+        notifyDataSetChanged()
+    }
 
 
 }
