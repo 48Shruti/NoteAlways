@@ -29,14 +29,14 @@
                 android:src="@drawable/baseline_bookmark_border_24"
                 android:layout_marginRight="@dimen/size_15dp"
                 android:id="@+id/imgbuttonbookmark"
-                android:backgroundTint="@color/white"
+
                 android:padding="@dimen/size_15dp"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_done"
                 android:id="@+id/imgbuttondone"
-                android:backgroundTint="@color/white"
+
                 android:padding="@dimen/size_15dp"/>
         </LinearLayout>
         <EditText
