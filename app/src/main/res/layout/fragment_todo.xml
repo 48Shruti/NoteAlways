@@ -9,11 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/todolist"
+        android:gravity="center"
         android:textStyle="bold"
-        android:textSize="@dimen/size_20dp"
+        android:textSize="@dimen/size_30dp"
         android:padding="@dimen/size_5dp"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+          android:layout_marginTop="@dimen/size_13dp"
         android:id="@+id/recycler"/>
 </LinearLayout>

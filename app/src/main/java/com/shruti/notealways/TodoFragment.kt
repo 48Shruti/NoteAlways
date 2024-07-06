@@ -1,7 +1,9 @@
 package com.shruti.notealways
 
+import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.icu.text.SimpleDateFormat
 import android.icu.text.Transliterator
 import android.os.Bundle
 import android.util.Log
@@ -11,11 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.shruti.notealways.databinding.BottomsheetTodoBinding
 import com.shruti.notealways.databinding.FragmentMainBinding
 import com.shruti.notealways.databinding.FragmentTodoBinding
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,7 +80,67 @@ class TodoFragment : Fragment(), TodoInterface {
     }
 
     override fun delete(todoDataClass: TodoDataClass, position: Int) {
-        // TODO: Implement this method
+        item.clear()
+        firestore.collection("todo").document(todoDataClass.id ?: "")
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(mainActivity,"Data delete",Toast.LENGTH_SHORT).show()
+                getCollectionTodo()
+            }
+            .addOnCanceledListener {
+                Toast.makeText(mainActivity,"Data Cancel",Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener{
+                Toast.makeText(mainActivity,"Data fail",Toast.LENGTH_SHORT).show()
+            }
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun update(todoDataClass: TodoDataClass, position: Int) {
+        val dialogBindingTodo = BottomsheetTodoBinding.inflate(layoutInflater)
+        var bottomSheettodo = BottomSheetDialog(mainActivity).apply {
+            setContentView(dialogBindingTodo.root)
+            show()
+        }
+        dialogBindingTodo.ettodo.setText(todoDataClass.title)
+        dialogBindingTodo.btnsetdata.setText(todoDataClass.time)
+        dialogBindingTodo.btnsetdata.setOnClickListener{
+            var dialog = DatePickerDialog(mainActivity)
+            dialog.setOnDateSetListener{view,year,month,dayOfMonth ->
+                var simpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+                var calendar = Calendar.getInstance()
+                calendar.set(Calendar.YEAR,year)
+                calendar.set(Calendar.MONTH,month)
+                calendar.set(Calendar.DATE,dayOfMonth)
+                var stringDate = simpleDateFormat.format(calendar.time)
+                dialogBindingTodo.btnsetdata.setText(stringDate)
+            }
+            dialog.show()
+        }
+        dialogBindingTodo.tvdone.setOnClickListener{
+            if(dialogBindingTodo.ettodo.text.isNullOrEmpty()){
+                dialogBindingTodo.ettodo.error = "Enter task"
+            }
+            else{
+                item.clear()
+                var updateTodo =  TodoDataClass(title = dialogBindingTodo.ettodo.text.toString(),
+                    time = dialogBindingTodo.btnsetdata.text.toString())
+                firestore.collection("todo").document(todoDataClass.id ?:"")
+                    .set(updateTodo)
+                    .addOnSuccessListener {
+                        getCollectionTodo()
+                        Toast.makeText(mainActivity, "Data Added", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(mainActivity, "Data failure", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnCanceledListener{
+                        Toast.makeText(mainActivity, "Data cancel", Toast.LENGTH_SHORT).show()
+                    }
+                adapter.notifyDataSetChanged()
+                bottomSheettodo.dismiss()
+            }
+        }
     }
 
     override fun getCollectionTodo() {

@@ -97,7 +97,9 @@ class BookmarkFragment : Fragment(), NotesInterface {
     }
 
     override fun notesUpdate(notesDataClass: NotesDataClass, position: Int) {
-        // Not implemented yet
+        val bundle = Bundle()
+        bundle.putString("notesId",notesDataClass.id)
+        findNavController().navigate(R.id.addNotesFragment,bundle)
     }
 }
 

@@ -169,7 +169,7 @@ class MainFragment : Fragment(),NotesInterface {
             dialogBindingTodo.btnsetdata.setOnClickListener{
                 var dialog = DatePickerDialog(mainActivity)
                 dialog.setOnDateSetListener{view,year,month,dayOfMonth ->
-                    var simpleDateFormat = SimpleDateFormat("dd,MMM,yyyy")
+                    var simpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
                     var calendar = Calendar.getInstance()
                     calendar.set(Calendar.YEAR,year)
                     calendar.set(Calendar.MONTH,month)
@@ -207,6 +207,7 @@ class MainFragment : Fragment(),NotesInterface {
 
 
     fun delete() {
+
         val deleteIcon: Drawable? = ContextCompat.getDrawable(mainActivity, R.drawable.icon_delete)
         val intrinsicWidth = deleteIcon?.intrinsicWidth
         val intrinsicHeight = deleteIcon?.intrinsicHeight
@@ -223,24 +224,22 @@ class MainFragment : Fragment(),NotesInterface {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
                 if (direction == ItemTouchHelper.LEFT) {
                     val position = viewHolder.adapterPosition
                     val itemToRemove = itemNote[position]
                     val backup = itemToRemove
-
-                    itemNote.removeAt(position)
-                    adapter.notifyItemRemoved(position)
-
+                    itemNote.clear()
                     firestore.collection("note").document(itemToRemove.id)
                         .delete()
                         .addOnSuccessListener {
+                            getCollectionNote()
+
                             Snackbar.make(binding.root, "Item deleted", Snackbar.LENGTH_LONG)
                                 .setAction("Undo") {
+                                    itemNote.clear()
                                     firestore.collection("note").add(backup)
                                         .addOnSuccessListener {
-                                            itemNote.add(position, backup)
-                                            adapter.notifyItemInserted(position)
+                                            getCollectionNote()
                                             Toast.makeText(mainActivity, "Data restored", Toast.LENGTH_SHORT).show()
                                         }
                                         .addOnFailureListener { execp ->
@@ -250,9 +249,8 @@ class MainFragment : Fragment(),NotesInterface {
                         }
                         .addOnFailureListener {
                             Toast.makeText(mainActivity, "Data fail", Toast.LENGTH_SHORT).show()
-                            itemNote.add(position, itemToRemove)
-                            adapter.notifyItemInserted(position)
                         }
+
                 }
             }
 
@@ -291,6 +289,7 @@ class MainFragment : Fragment(),NotesInterface {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recylerlist)
+        adapter.notifyDataSetChanged()
     }
 
 

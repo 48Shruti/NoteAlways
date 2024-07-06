@@ -17,7 +17,7 @@
     <string name="description">Description</string>
     <string name="notes">Notes</string>
     <string name="todo">To-Do</string>
-    <string name="create_notes">Create Notes</string>
+    <string name="create_notes">Create Note </string>
     <string name="create_todo_enter">Tap to create subtasks</string>
     <string name="done">Done</string>
     <string name="setReminder">Set Remainder</string>
