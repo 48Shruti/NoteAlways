@@ -107,7 +107,7 @@ class TodoFragment : Fragment(), TodoInterface {
         dialogBindingTodo.btnsetdata.setOnClickListener{
             var dialog = DatePickerDialog(mainActivity)
             dialog.setOnDateSetListener{view,year,month,dayOfMonth ->
-                var simpleDateFormat = SimpleDateFormat("dd/MMM/yyyy")
+                var simpleDateFormat = SimpleDateFormat("dd/MMM/yy")
                 var calendar = Calendar.getInstance()
                 calendar.set(Calendar.YEAR,year)
                 calendar.set(Calendar.MONTH,month)
